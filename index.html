@@ -1,0 +1,1569 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="에스더서 10장을 10막으로 옮긴 선택형 궁중 드라마. 성경에 적힌 자리에서 다르게 고르면 그 자리에서 이야기가 끝난다.">
+<style>
+  :root{
+    color-scheme: light;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body{ margin:0; font:14px system-ui, -apple-system, sans-serif }
+  img{ max-width:100% }
+  [hidden]{ display:none !important }
+</style>
+<title>수산 궁의 밤</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@300;400;600&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+
+<style>
+/* 레이아웃 — 유약 벽돌 패널 한 장이 가운데 서고, 머리에 네 가지 숫자,
+   발치에 점토판 같은 선택지가 놓인다. 수산 궁의 밤에 맞춘 단일 암야 테마. */
+:root{
+  --night:#09081a;
+  --brick:#14122c;
+  --brick-2:#1d1a3c;
+  --gold:#c8a23c;
+  --gold-2:#f2d98c;
+  --ox:#9b2b33;
+  --ash:#6f6a7e;
+  --linen:#ece5d4;
+  --dim:#9d937c;
+  --line:rgba(200,162,60,.22);
+  --display:'Gowun Batang', 'Nanum Myeongjo', serif;
+  --body:'Noto Serif KR', 'Gowun Batang', serif;
+  --ui:'IBM Plex Sans KR', system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(44,74,160,.30), transparent 60%),
+    radial-gradient(80% 60% at 50% 110%, rgba(155,43,51,.16), transparent 65%),
+    var(--night);
+  color:var(--linen);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.95;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);
+  z-index:30;background:var(--night);
+}
+
+.wrap{
+  max-width:58rem;margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:0 3rem;
+}
+
+/* ── 상단 숫자판 ───────────────────────────────── */
+.crown{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:linear-gradient(180deg, var(--night) 74%, rgba(9,8,26,0));
+  padding-block:.75rem .9rem;
+}
+.crown[hidden]{display:none!important}
+.crown-row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem}
+.act-mark{font-family:var(--ui);font-size:.74rem;letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+.act-mark b{color:var(--gold-2);font-weight:600}
+.pips{display:flex;gap:4px;margin-inline-start:auto}
+.pip{width:7px;height:7px;transform:rotate(45deg);background:rgba(236,229,212,.16)}
+.pip.on{background:var(--gold)}
+.pip.now{background:var(--gold-2);box-shadow:0 0 0 2px rgba(242,217,140,.2)}
+
+.meters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;margin-top:.7rem}
+.meter{
+  all:unset;display:block;cursor:help;min-width:0;position:relative;
+  border:1px solid var(--line);background:rgba(20,18,44,.8);
+  padding:.45rem .55rem .55rem;
+}
+.meter:hover,.meter:focus-visible{border-color:var(--gold)}
+.meter:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+.meter .nm{font-family:var(--ui);font-size:.72rem;color:var(--linen)}
+.meter .val{float:right;font-family:var(--ui);font-size:.82rem;font-weight:600;color:var(--gold-2);font-variant-numeric:tabular-nums}
+.bar{height:4px;background:rgba(236,229,212,.12);margin-top:.45rem;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);transition:width .5s cubic-bezier(.2,.7,.3,1)}
+.meter.danger .val{color:#eb8d8d}
+.meter.danger .bar i{background:var(--ox)}
+.delta{
+  position:absolute;right:.5rem;top:-.4rem;font-family:var(--ui);font-size:.74rem;
+  font-weight:600;color:var(--gold-2);animation:rise 1.9s ease-out forwards;pointer-events:none;
+}
+.delta.down{color:#eb8d8d}
+@keyframes rise{0%{opacity:0;transform:translateY(6px)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
+
+/* ── 본문 ─────────────────────────────────────── */
+.panel{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(29,26,60,.85), rgba(20,18,44,.92));
+  padding:clamp(1.3rem,4vw,2.6rem);position:relative;
+}
+.panel::after{content:"";position:absolute;inset:6px;border:1px solid rgba(200,162,60,.1);pointer-events:none}
+.scene-title{font-family:var(--ui);font-size:.74rem;letter-spacing:.26em;color:var(--gold);margin:0 0 1.3rem}
+.passage p{margin:0 0 1.1rem;max-width:40rem;animation:fade .7s ease-out both}
+.passage p:last-child{margin-bottom:0}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.passage .echo{color:var(--dim);border-left:2px solid var(--line);padding-left:1rem;font-size:.96rem}
+.passage .said{
+  font-family:var(--display);font-size:1.14rem;line-height:1.8;color:var(--gold-2);
+  border-inline-start:2px solid var(--gold);padding-inline-start:1rem;margin-block:1.4rem;
+}
+.passage .said b{
+  display:block;font-family:var(--ui);font-size:.72rem;font-weight:600;
+  letter-spacing:.14em;color:var(--dim);margin-bottom:.3rem;
+}
+.passage .tip{border:1px solid var(--line);background:rgba(44,74,160,.16);padding:.85rem 1.05rem;font-size:.94rem}
+.passage .tip b{color:var(--gold-2);font-weight:600}
+.passage .must{
+  border:1px solid rgba(235,141,141,.5);background:rgba(155,43,51,.15);
+  padding:.9rem 1.1rem;font-size:.94rem;
+}
+.passage .must b{color:#eb8d8d;font-weight:600}
+.passage .quote{
+  font-family:var(--display);font-size:1.08rem;color:var(--linen);
+  background:rgba(200,162,60,.07);border:1px solid var(--line);padding:.9rem 1.1rem;
+}
+.passage .quote em{display:block;font-family:var(--ui);font-size:.72rem;font-style:normal;color:var(--dim);margin-top:.5rem}
+
+.bible{
+  font-family:var(--ui);font-size:.8rem;line-height:1.75;color:var(--dim);
+  border-top:1px solid var(--line);padding-top:.85rem;margin-top:.4rem;
+}
+.bible b{color:var(--gold);font-weight:600}
+.bnote{
+  font-family:var(--ui);font-size:.84rem;line-height:1.7;
+  border:1px solid rgba(63,156,149,.4);background:rgba(63,156,149,.1);
+  padding:.75rem 1rem;color:var(--linen);
+}
+.bnote b{color:#7fd8d0;font-weight:600;display:block;margin-bottom:.15rem}
+.bnote.same{border-color:rgba(200,162,60,.45);background:rgba(200,162,60,.1)}
+.bnote.same b{color:var(--gold-2)}
+
+.gl{font-weight:400;color:var(--gold-2);border-bottom:1px dotted var(--gold);cursor:pointer}
+.gl:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+
+/* ── 선택지 ───────────────────────────────────── */
+.choices{display:grid;gap:.6rem;margin-top:2.1rem}
+.choice{
+  all:unset;display:block;cursor:pointer;min-width:0;
+  border:1px solid var(--line);background:rgba(9,8,26,.55);
+  padding:.95rem 1.1rem;font-family:var(--body);font-size:1rem;line-height:1.65;
+  color:var(--linen);transition:border-color .2s, background .2s, transform .2s;
+  animation:fade .5s ease-out both;
+}
+.choice:hover,.choice:focus-visible{border-color:var(--gold);background:rgba(44,74,160,.22);transform:translateX(3px)}
+.choice:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+.choice .tag{display:block;font-family:var(--ui);font-size:.7rem;letter-spacing:.12em;color:var(--gold);margin-bottom:.3rem}
+.fx{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem}
+.fx span{font-family:var(--ui);font-size:.68rem;border:1px solid rgba(200,162,60,.35);color:var(--gold-2);padding:.1rem .45rem}
+.fx span.down{border-color:rgba(235,141,141,.4);color:#eb8d8d}
+.choice.locked{cursor:not-allowed;opacity:.5;border-style:dashed}
+.choice.locked:hover{transform:none;background:rgba(9,8,26,.55);border-color:var(--line)}
+.choice.locked .tag{color:var(--ox)}
+.choice.go{text-align:center;font-family:var(--ui);font-size:.82rem;letter-spacing:.2em;color:var(--gold-2)}
+.choice.restart{border-color:var(--gold);background:rgba(200,162,60,.1);text-align:center;font-family:var(--ui);letter-spacing:.1em}
+
+/* ── 막 전환 ──────────────────────────────────── */
+.curtain{
+  position:fixed;inset:0;z-index:40;display:grid;place-items:center;overflow:auto;
+  background:var(--night);cursor:pointer;
+  padding-block:calc(env(safe-area-inset-top,0px) + 1.5rem) 2rem;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+.curtain[hidden]{display:none!important}
+.curtain .in{text-align:center;animation:fade 1s ease-out both;max-width:32rem}
+.curtain .no{font-family:var(--ui);font-size:.76rem;letter-spacing:.38em;color:var(--gold)}
+.curtain h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,7vw,3rem);margin:.7rem 0 0;text-wrap:balance}
+.curtain .ref{font-family:var(--ui);font-size:.74rem;letter-spacing:.1em;color:var(--dim);margin-top:.8rem}
+.curtain .reading{
+  border:1px solid var(--line);padding:.9rem 1.1rem;margin-top:1.8rem;
+  font-family:var(--ui);font-size:.82rem;line-height:1.8;color:var(--linen);text-align:left;
+}
+.curtain .reading b{color:var(--gold-2);font-weight:600}
+.curtain .skip{font-family:var(--ui);font-size:.68rem;letter-spacing:.2em;color:rgba(157,147,124,.6);margin-top:1.6rem}
+
+.rosette{width:clamp(56px,14vw,84px);height:auto;color:var(--gold);opacity:.85;margin-bottom:1.3rem}
+
+/* ── 표제 ─────────────────────────────────────── */
+.title-screen{text-align:center;padding-block:clamp(1.6rem,7vw,4rem) 2rem;animation:fade 1.1s ease-out both}
+.title-screen h1{
+  font-family:var(--display);font-weight:700;margin:0;
+  font-size:clamp(2.6rem,11vw,4.4rem);letter-spacing:.06em;
+  text-shadow:0 0 36px rgba(200,162,60,.22);
+}
+.title-screen .sub{font-family:var(--ui);font-size:.78rem;letter-spacing:.26em;color:var(--gold);margin-top:1rem}
+.intro{max-width:34rem;margin:2.2rem auto 0;text-align:left}
+.intro p{margin:0 0 1rem;font-size:1rem}
+.intro p:last-child{margin-bottom:0}
+.menu{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:2.4rem}
+.btn{
+  all:unset;cursor:pointer;border:1px solid var(--gold);color:var(--gold-2);
+  font-family:var(--ui);font-size:.82rem;letter-spacing:.14em;padding:.8rem 1.5rem;
+  transition:background .2s,color .2s;text-align:center;
+}
+.btn:hover,.btn:focus-visible{background:var(--gold);color:var(--night)}
+.btn:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px}
+.btn.quiet{border-color:var(--line);color:var(--dim)}
+.btn.quiet:hover,.btn.quiet:focus-visible{background:rgba(236,229,212,.08);color:var(--linen)}
+
+/* ── 도구 ─────────────────────────────────────── */
+.tools{display:flex;gap:.9rem;justify-content:flex-end;margin-top:1rem;flex-wrap:wrap}
+.tool{
+  all:unset;cursor:pointer;font-family:var(--ui);font-size:.74rem;color:var(--dim);
+  border-bottom:1px solid transparent;padding:.2rem 0;
+}
+.tool:hover,.tool:focus-visible{color:var(--gold-2);border-color:var(--gold)}
+.tool:focus-visible{outline:none}
+
+/* ── 서랍 ─────────────────────────────────────── */
+.drawer{
+  position:fixed;inset:0;z-index:50;background:rgba(9,8,26,.92);overflow:auto;
+  display:grid;place-items:start center;
+  padding-block:calc(env(safe-area-inset-top,0px) + 2rem) 3rem;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+.drawer[hidden]{display:none!important}
+.drawer .sheet{width:min(44rem,100%);border:1px solid var(--line);background:var(--brick);padding:clamp(1.2rem,4vw,2rem)}
+.drawer h3{font-family:var(--ui);font-size:.8rem;letter-spacing:.22em;color:var(--gold);margin:0 0 1.3rem}
+.drawer p{font-size:.96rem}
+.rulebox{border:1px solid var(--line);padding:1rem 1.1rem;margin-bottom:1rem}
+.rulebox h4{font-family:var(--display);font-size:1.12rem;margin:0 0 .5rem;color:var(--gold-2)}
+.rulebox p{margin:0 0 .5rem}
+.rulebox p:last-child{margin-bottom:0}
+.rulebox .mini{font-family:var(--ui);font-size:.74rem;color:var(--dim)}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.log li{display:grid;grid-template-columns:4rem 1fr;gap:.8rem;font-size:.94rem;align-items:baseline}
+.log .when{font-family:var(--ui);font-size:.72rem;color:var(--gold);min-width:0}
+.log .what{min-width:0}
+.log .ok{color:var(--gold-2)}
+.log .no{color:#eb8d8d}
+.dict{display:grid;gap:.75rem;margin:0;padding:0}
+.dict div{min-width:0}
+.dict dt{font-family:var(--display);font-size:1.04rem;color:var(--gold-2)}
+.dict dd{margin:.15rem 0 0;font-size:.94rem;color:var(--dim)}
+.dict dd .ref{font-family:var(--ui);font-size:.76rem;color:var(--gold);display:block;margin-top:.2rem}
+.note{border-top:1px solid var(--line);padding-top:1rem;margin-top:1rem}
+.note:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.note h4{font-family:var(--display);font-size:1.06rem;margin:0 0 .4rem;color:var(--gold-2)}
+.note p{margin:0;font-size:.94rem;color:var(--dim);max-width:40rem}
+.empty{color:var(--dim);font-size:.94rem;margin:0}
+
+/* ── 낱말 말풍선 ──────────────────────────────── */
+.pop{
+  position:fixed;z-index:60;max-width:min(21rem,calc(100vw - 32px));
+  border:1px solid var(--gold);background:var(--brick-2);
+  padding:.7rem .9rem;font-size:.92rem;line-height:1.7;color:var(--linen);
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.pop[hidden]{display:none!important}
+.pop b{display:block;font-family:var(--display);color:var(--gold-2);margin-bottom:.2rem}
+.pop .ref{display:block;font-family:var(--ui);font-size:.76rem;color:var(--gold);margin-top:.35rem}
+
+/* ── 결말 ─────────────────────────────────────── */
+.ending{animation:fade 1.2s ease-out both}
+.stamp{
+  display:block;width:fit-content;margin:0 auto 1.4rem;
+  font-family:var(--ui);font-size:.74rem;letter-spacing:.2em;
+  border:2px solid var(--gold);color:var(--gold-2);padding:.45rem 1.1rem;
+  transform:rotate(-2deg);
+}
+.stamp.off{border-color:var(--ash);color:var(--ash)}
+.over{
+  text-align:center;font-family:var(--ui);font-size:.92rem;letter-spacing:.3em;
+  color:#eb8d8d;border-block:1px solid rgba(235,141,141,.35);
+  padding-block:.8rem;margin-bottom:1.6rem;
+}
+.ending .kicker{font-family:var(--ui);font-size:.74rem;letter-spacing:.26em;color:var(--gold);text-align:center}
+.ending h2{font-family:var(--display);font-weight:700;text-align:center;text-wrap:balance;font-size:clamp(2rem,8vw,3.1rem);margin:.8rem 0 1.5rem}
+.ending.sad h2{color:#e8d9d9}
+.ending .epi{text-align:center;font-family:var(--display);font-size:1.1rem;color:var(--gold-2);max-width:32rem;margin:0 auto 2.4rem}
+.says{border:1px solid rgba(63,156,149,.45);background:rgba(63,156,149,.08);padding:1.1rem 1.2rem;margin-top:2.2rem}
+.says h4{font-family:var(--ui);font-size:.78rem;letter-spacing:.16em;color:#7fd8d0;margin:0 0 .7rem}
+.says p{margin:0 0 .6rem;font-size:.96rem}
+.says p:last-child{margin-bottom:0}
+.says .ref{font-family:var(--ui);font-size:.8rem;color:var(--gold)}
+.why{border:1px solid var(--line);padding:1.1rem 1.2rem;margin-top:1.2rem}
+.why h4{font-family:var(--ui);font-size:.76rem;letter-spacing:.18em;color:var(--gold);margin:0 0 .9rem}
+.why ul{margin:0;padding-left:1.1rem;display:grid;gap:.45rem}
+.why li{font-size:.95rem}
+.why li b{color:var(--gold-2);font-weight:600}
+.why li.no b{color:#eb8d8d}
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));gap:.6rem;margin-top:1.2rem}
+.tally div{border:1px solid var(--line);padding:.7rem .8rem;min-width:0}
+.tally .k{font-family:var(--ui);font-size:.7rem;color:var(--dim);display:block}
+.tally .v{font-family:var(--display);font-size:1.5rem;color:var(--gold-2);font-variant-numeric:tabular-nums}
+
+@media (max-width:560px){
+  .meters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .log li{grid-template-columns:1fr}
+  .log .when{margin-bottom:-.3rem}
+  .btn{flex:1 1 9rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="crown" id="crown" hidden>
+    <div class="crown-row">
+      <span class="act-mark" id="actMark"></span>
+      <span class="pips" id="pips"></span>
+    </div>
+    <div class="meters" id="meters"></div>
+  </header>
+
+  <main id="stage"></main>
+
+  <div class="tools" id="tools" hidden>
+    <button class="tool" id="btnHow">게임 방법</button>
+    <button class="tool" id="btnDict">낱말 사전</button>
+    <button class="tool" id="btnLog">내 기록</button>
+    <button class="tool" id="btnNote">진짜 성경 이야기</button>
+    <button class="tool" id="btnReset">처음부터</button>
+  </div>
+</div>
+
+<div class="curtain" id="curtain" hidden></div>
+<div class="pop" id="pop" hidden></div>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="sheet">
+    <h3 id="drawerTitle"></h3>
+    <div id="drawerBody"></div>
+    <div style="margin-top:1.8rem"><button class="btn quiet" id="drawerClose">닫기</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ───────────────────── 네 가지 숫자 ───────────────────── */
+const STATS = [
+  {k:'chong', name:'왕의 마음', desc:'왕이 너를 얼마나 아끼는지. 5막에서 왕 앞에 설 때 이 숫자가 필요하다.'},
+  {k:'mang',  name:'궁궐 사람들', desc:'궁에서 네 편이 몇 명인지. 중요한 순간에 왕의 마음 대신 너를 받쳐 준다.'},
+  {k:'dam',   name:'용기', desc:'목숨을 걸 수 있는 마음. 4막에서 이게 모자라면 그 말을 입 밖에 내지 못한다.'},
+  {k:'ui',    name:'하만의 의심', desc:'하만이 네 비밀에 얼마나 가까이 왔는지. 이것만은 낮을수록 좋다.', danger:true}
+];
+const MAX = 12;
+
+/* ───────────────────── 낱말 사전 ───────────────────── */
+const DICT = [
+  ['페르시아','지금의 이란 땅을 중심으로 서아시아를 다스리던 아주 큰 나라. 약 2500년 전 이야기다.', '에 1:1'],
+  ['수산','페르시아의 수도 가운데 하나. 왕이 겨울을 보내던 큰 도시다.', '에 1:2'],
+  ['아하수에로','페르시아 왕. 그리스 기록에는 크세르크세스라는 이름으로 나온다.', '에 1:1'],
+  ['유대인','이스라엘 민족. 이때는 나라를 잃고 여러 나라에 흩어져 살았다. 성경에는 유다인이라고 적혀 있다.', '에 2:5'],
+  ['모르드개','에스더의 사촌 오빠. 부모를 잃은 에스더를 키웠다.', '에 2:5-7'],
+  ['하닷사','에스더의 유대인 이름. 도금양이라는 나무 뜻이다. 베어도 다시 자라는 나무.', '에 2:7'],
+  ['에스더','페르시아 말로 별이라는 뜻. 밖에서 쓰는 이름이다.', '에 2:7'],
+  ['와스디','아하수에로의 첫 번째 왕비. 왕의 부름을 거절했다.', '에 1:9-12'],
+  ['하만','왕이 제일 높은 자리에 올린 신하. 이 이야기의 악당이다.', '에 3:1'],
+  ['아각','아주 오래전 유대인과 싸웠던 민족의 왕 이름. 하만의 집안이 그 핏줄이다. 사울 왕이 아각을 살려 둔 이야기가 사무엘상에 있다.', '삼상 15:8-9 · 에 3:1'],
+  ['헤개','궁에서 소녀들이 지내는 곳을 맡은 나이 든 관리.', '에 2:8'],
+  ['하닥','왕이 에스더에게 붙여 준 심부름꾼. 궁 밖 소식을 날라 준다.', '에 4:5'],
+  ['하르보나','왕을 곁에서 모시던 신하. 결정적인 순간에 한마디를 한다.', '에 7:9'],
+  ['세레스','하만의 아내.', '에 5:10'],
+  ['신하','왕 밑에서 일하는 사람. 높은 사람도 있고 심부름하는 사람도 있다.', ''],
+  ['왕궁 문','궁궐 입구. 관리들이 일하고 온갖 소식이 오가는 곳이다.', '에 2:19'],
+  ['도장 반지','왕의 도장이 새겨진 반지. 여기 찍힌 종이는 곧 왕의 명령이 된다.', '에 3:10 · 8:2'],
+  ['제비','주사위처럼 던져서 뽑는 것. 옛날에는 이걸로 하늘의 뜻을 묻는다고 여겼다.', '에 3:7'],
+  ['부림','제비를 뜻하는 말. 유대인 명절 이름이 여기서 나왔다.', '에 9:26'],
+  ['금식','일부러 아무것도 먹지 않는 것. 아주 간절할 때 했다.', '에 4:16'],
+  ['금 지팡이','왕이 손에 든 금 막대기. 이것을 내밀어 주면 살고, 안 내밀면 죽는다. 성경에는 금 규라고 적혀 있다.', '에 4:11 · 5:2'],
+  ['기록책','왕궁에서 일어난 일을 날짜별로 적어 두는 두루마리. 성경에는 역대 일기라고 나온다.', '에 6:1'],
+  ['둘째 처소','왕을 한 번 만나고 돌아온 소녀들이 지내던 곳. 왕이 이름을 불러 주지 않으면 거기서 평생 지냈다.', '에 2:14']
+];
+const DICT_KEYS = DICT.map(d => d[0]).sort((a,b) => b.length - a.length);
+const DICT_MAP = {}; DICT.forEach(d => DICT_MAP[d[0]] = {d:d[1], r:d[2]});
+
+/* ───────────── 막 제목 · 읽을 곳 · 성경 노트 ───────────── */
+const ACTS = {
+  1:{title:'180일 동안의 잔치', ch:'에스더 1장', verses:'12절, 19절, 22절',
+     note:'잔치가 180일 동안 열린 것, 와스디가 왕의 부름을 거절한 것, 그래서 법이 바뀐 것은 모두 성경에 있는 그대로다. 하닷사가 성문이나 우물가에 서 있는 장면은 게임을 위해 지어낸 것이다.'},
+  2:{title:'소녀들을 모으다', ch:'에스더 2장', verses:'10절, 14절, 15절, 22절',
+     note:'1년 동안 준비한 것, 에스더가 헤개가 골라 준 것만 가져간 것, 유대인이라는 걸 숨긴 것, 왕을 죽이려는 계획을 모르드개의 이름으로 알린 것은 성경에 있다. 1년 동안 다른 소녀들과 어떻게 지냈는지는 적혀 있지 않다.'},
+  3:{title:'제비를 뽑다', ch:'에스더 3장', verses:'2절, 7절, 9절, 15절',
+     note:'하만이 제비를 뽑아 날짜를 정한 것, 엄청난 돈을 내겠다고 한 것, 왕이 어느 민족인지 묻지도 않고 반지를 준 것은 성경에 있다. 성경은 이때 에스더가 무엇을 하고 있었는지 한 줄도 적지 않았다. 이 막은 그 빈자리를 채운 것이다.'},
+  4:{title:'죽으면 죽으리라', ch:'에스더 4장', verses:'11절, 14절, 16절',
+     note:'부르지 않았는데 들어가면 죽는 법, 30일 동안 부름을 못 받았다는 에스더의 말, "이 때를 위함이 아닌지 누가 알겠느냐"는 모르드개의 말, 3일 동안의 금식은 모두 성경에 있다. 물러서는 선택지는 성경에 없지만, 모르드개의 말이 그 결과까지 미리 말해 준다.'},
+  5:{title:'금 지팡이', ch:'에스더 5장', verses:'2절, 4절, 8절, 14절',
+     note:'3일째 되는 날 안뜰에 선 것, 왕이 금 규를 내민 것, "나라의 절반이라도 주겠다"는 말, 잔치를 두 번으로 미룬 것, 하만이 오십 규빗 나무를 세운 것은 성경에 있다. 에스더가 두 번이나 미룬 것이 이 장의 핵심이다.'},
+  6:{title:'잠이 오지 않는 밤', ch:'에스더 6장', verses:'1절, 2절, 3절, 10절',
+     note:'이 막이 이야기 전체를 뒤집는다. 하필 그날 밤 왕이 잠들지 못한 것, 하필 기록책에서 모르드개의 이름이 나온 것, 하필 그때 하만이 들어온 것. 에스더기에는 하나님이라는 말이 한 번도 나오지 않는다. 대신 이런 우연들이 줄줄이 나온다.'},
+  7:{title:'두 번째 잔치', ch:'에스더 7장', verses:'4절, 8절, 10절',
+     note:'"우리가 노비로 팔렸더면 내가 잠잠하였으리이다"라는 말, 왕이 후원으로 나간 사이 하만이 에스더 쪽으로 엎드린 것, 하르보나가 나무 이야기를 꺼낸 것은 성경에 있다. 에스더가 어떤 말투로 말할지 고르는 장면은 지어낸 것이다. 세 가지 다 성경이 적은 말 안에 들어 있다.'},
+  8:{title:'도장 반지', ch:'에스더 8장', verses:'8절, 11절, 16절, 17절',
+     note:'한번 도장 찍힌 명령은 왕도 못 되돌린다. 그래서 첫 번째 편지를 취소하는 대신 두 번째 편지를 썼다. 성경의 두 번째 편지는 첫 번째 편지와 똑같이 세게 쓰였다. 그래서 17절은 "많은 백성이 유다인을 두려워하여"라고 적는다.'},
+  9:{title:'뒤바뀐 날', ch:'에스더 9장', verses:'10절, 13절, 22절',
+     note:'수산에서 하루를 더 달라고 한 것, 하만의 열 아들을 매단 것은 성경에 있다. 왜 그랬는지는 적혀 있지 않다. 그래서 이 게임은 그 대목을 고르게 하지 않고 성경이 적은 대로만 지나간다. 대신 유다인이 재산에 손대지 않았다는 말이 세 번 나온다.'},
+  10:{title:'마지막 세 줄', ch:'에스더 10장', verses:'1절~3절 전부',
+     note:'마지막 장은 세 줄뿐이다. 왕이 세금을 거둔 일과 모르드개가 높아진 일만 적고, 에스더의 이름은 더 부르지 않는다. 이 책은 기적을 적지 않고 우연만 적는다. 그 우연을 뭐라고 부를지는 읽는 사람 몫이다.'}
+};
+
+/* ───────────────────── 장면 ───────────────────── */
+const P = s => s;
+const T = s => ({tip:s});
+const M = s => ({must:s});
+const Q = (line, ref) => ({quote:line, ref:ref});
+const S = (who, line) => ({who, line});
+const B = (ref, what) => ({bible:ref, what:what});
+
+const MUSTBOX = '📖 <b>이 장면은 성경에 분명히 적혀 있다.</b> 성경과 다르게 고르면 이야기가 여기서 끝난다.';
+
+const SCENES = {
+
+/* ── 1막 ───────────────────────────────────────── */
+'a1-1':{act:1, title:'수산 성, 유대인 동네',
+  t:[
+    P('밤인데도 왕궁 쪽 하늘만 환하다. 벌써 180일째다.'),
+    P('아하수에로 왕이 잔치를 열고 있다. 반년 동안 쉬지 않고. 자기 나라가 얼마나 큰지 신하들에게 보여 주려는 것이다. 왕이 다스리는 땅은 인도에서 이집트까지, 127개 지방이다.'),
+    P('너는 그 불빛을 멀리서 본다. 부모가 없는 유대인 소녀다. 사촌 오빠 모르드개가 너를 키웠다.'),
+    P('그는 매일 왕궁 문 앞에 앉아 있다. 거기 앉아 있으면 궁궐 소식을 제일 먼저 들을 수 있기 때문이다.'),
+    P('오늘 밤, 너는 어디에서 소문을 들을까?'),
+    B('에스더 1:1~4', '왕이 180일 동안 잔치를 베푼 대목. 이 장면은 성경에 없다. 무엇을 골라도 괜찮다.')
+  ],
+  c:[
+    {tag:'왕궁 문', x:'오빠 옆에 앉아서, 드나드는 사람들의 말을 듣는다.',
+     e:{mang:1}, echo:'궁궐 소식은 늘 문에서 먼저 샌다. 누가 누구에게 굽신거리는지, 너는 그날 처음 알았다.', to:'a1-2'},
+    {tag:'우물가', x:'물 길으러 온 아주머니들 사이에 선다.',
+     e:{chong:1}, echo:'사람 마음이 어느 쪽으로 기우는지 읽는 법을, 너는 물동이 옆에서 배웠다.', to:'a1-2'},
+    {tag:'집', x:'문을 닫고 앉아, 옛날 조상들 이야기가 적힌 두루마리를 읽는다.',
+     e:{dam:1}, echo:'끌려온 사람들 이야기는 늘 같은 데서 멈춘다. 한 사람이 무릎 꿇기를 그만두었을 때.', to:'a1-2'}
+  ]},
+
+'a1-2':{act:1, title:'잔치 마지막 날',
+  t:[
+    P('잔치의 마지막 날이다. 왕은 술을 많이 마셨다.'),
+    P('왕에게는 자랑할 것이 하나 더 있었다. 왕비 와스디다. 왕은 신하 일곱을 보내 왕비를 부른다. 왕관을 쓰고 나와서 모두에게 얼굴을 보이라고.'),
+    P('와스디는 가지 않았다.'),
+    P('왜 가지 않았는지는 아무도 적어 두지 않았다. 적힌 것은 그다음에 일어난 일뿐이다.'),
+    B('에스더 1:10~12', '와스디가 오기를 거절해서 왕이 크게 노한 대목')
+  ],
+  c:[
+    {tag:'왕이 걱정된다', x:'왕이 얼마나 화가 났을지를 먼저 생각한다.',
+     e:{chong:1}, echo:'힘 있는 사람의 화에는 결이 있다. 너는 그 결을 머릿속에 적어 두었다.', to:'a1-3'},
+    {tag:'와스디가 대단하다', x:'왕이 불렀는데 움직이지 않은 사람이 있다는 사실만 오래 남는다.',
+     e:{dam:1}, echo:'와스디는 다시 불리지 않았다. 하지만 너는 그 이름을 한 번도 잊지 않았다.', to:'a1-3'},
+    {tag:'다음이 궁금하다', x:'이 일이 어떤 법으로 끝날지를 먼저 생각한다.',
+     e:{mang:1}, echo:'궁궐에서 일어난 일은 반드시 종이가 되어 나온다. 너는 그 종이를 기다렸다.', to:'a1-3'}
+  ]},
+
+'a1-3':{act:1, title:'종이 한 장',
+  t:[
+    P('왕이 화가 나서 신하들에게 묻는다. 므무간이라는 신하가 대답한다.'),
+    S('므무간','왕비가 왕의 말을 안 들었다는 소문이 온 나라에 퍼지면, 모든 여자가 남편 말을 안 듣게 됩니다. 아예 법으로 만들어 버리십시오. 그리고 다시는 못 고치게 하십시오.'),
+    P('그래서 127개 지방으로 편지가 나간다. 지방마다 쓰는 글자가 다르고 말이 다르니, 지방마다 그 글자로 따로 적어서.'),
+    P('왕비 한 사람이 "안 가겠다"고 한 일이, 하루 만에 온 나라의 법이 되었다.'),
+    T('그날 너는 알게 됐다. <b>이 나라에서 사람을 다스리는 건 칼이 아니라 종이다. 그리고 한번 왕의 도장이 찍힌 종이는 아무도 되돌릴 수 없다.</b> 이 규칙을 기억해 둬라. 8막에서 아주 중요해진다.'),
+    B('에스더 1:19', '"고치지 못하게 하고"라는 말이 나오는 절')
+  ],
+  c:[{go:true, x:'해가 바뀐다', to:'a2-1'}]},
+
+/* ── 2막 ───────────────────────────────────────── */
+'a2-1':{act:2, title:'전국에서 소녀들을 모은다',
+  t:[
+    P('왕의 화가 풀리자 신하들이 말한다. 새 왕비를 뽑으시라고. 온 나라에서 소녀들을 모아 수산 궁으로 데려오자고.'),
+    P('관리들이 유대인 동네에도 온다. 네 이름이 명단에 올라간다.'),
+    P('떠나기 전날 밤, 모르드개가 처음으로 목소리를 낮춘다.'),
+    S('모르드개','네가 유대인이라는 걸 아무에게도 말하지 마라.'),
+    P('왜냐고 묻기도 전에 그는 입을 다문다.'),
+    B('에스더 2:10', '"에스더가 자기의 민족과 종족을 고하지 아니하니" · 어느 쪽을 골라도 숨기는 것은 같다')
+  ],
+  c:[
+    {tag:'묻지 않는다', x:'그냥 따른다. 하닷사라는 이름은 집에 두고, 에스더만 데리고 간다.',
+     e:{chong:1}, echo:'궁궐 문을 넘을 때 너는 아무것도 지니지 않았다. 이름 하나까지도.', to:'a2-2'},
+    {tag:'왜냐고 묻는다', x:'무엇을 숨겨야 하는지는 알고 들어가겠다고 말한다.',
+     e:{dam:1}, echo:'오빠는 끝내 대답하지 않았다. 대신 네 손을 한 번 더 꽉 쥐었다.', to:'a2-2'},
+    {tag:'약속을 건다', x:'숨기겠다고 한다. 다만 때가 되면 내 입으로 말하겠다고 덧붙인다.',
+     e:{dam:1, mang:1}, echo:'오빠는 오래 너를 보았다. 그리고 고개를 끄덕였다.', to:'a2-2'}
+  ]},
+
+'a2-2':{act:2, title:'헤개의 뜰', must:true,
+  t:[
+    P('궁에는 소녀들이 지내는 집이 따로 있다. 헤개라는 나이 든 관리가 그곳을 맡고 있다.'),
+    P('여기서 1년을 지낸다. 6개월은 향기 나는 기름을 바르고, 6개월은 다른 화장품을 쓴다. 왕 앞에 나가기 위한 준비다.'),
+    T('1년이 지나 왕에게 갈 때, 소녀는 궁에서 <b>원하는 물건을 무엇이든 가져갈 수 있다.</b> 기회는 딱 한 번이다. 왕이 이름을 불러 주지 않으면 둘째 처소로 가서 두 번 다시 왕을 만나지 못한다.'),
+    P('헤개가 너를 오래 본다. 나이 든 사람의 눈은 사람을 물건처럼 재지 않는다. 그는 네가 무엇을 달라고 할지 보고 있다.'),
+    M(MUSTBOX),
+    B('에스더 2:12~15', '특히 15절 — 에스더가 헤개가 정해 준 것 외에는 구하지 않은 대목')
+  ],
+  c:[
+    {tag:'헤개에게 맡긴다', x:'헤개가 골라 주는 것 말고는 아무것도 달라고 하지 않는다.',
+     e:{chong:2, mang:1}, canon:true,
+     b:'에스더는 헤개가 정해 준 것 말고는 아무것도 구하지 않았다. 그리고 보는 사람마다 그를 좋아했다.', bref:'에 2:15',
+     echo:'그날부터 헤개는 네게 시녀 일곱과 제일 좋은 방을 내주었다. 궁에서 나이 든 사람의 호의는 값이 비싸다.', to:'a2-3'},
+    {tag:'제일 비싼 것', x:'궁에 있는 가장 귀한 보석과 향수를 전부 달라고 한다.',
+     e:{chong:1, mang:-1, ui:1}, to:'E.unchosen'},
+    {tag:'아무것도', x:'아무것도 받지 않는다. 입은 옷 그대로 가겠다고 한다.',
+     e:{dam:1, mang:1}, to:'E.unchosen'}
+  ]},
+
+'a2-3':{act:2, title:'1년',
+  t:[
+    P('1년은 길다. 향기름 냄새가 살갗에 배고, 계절이 네 번 바뀌는 동안 같은 뜰에서 같은 얼굴들을 본다.'),
+    P('어떤 아이는 바빌론에서 왔고, 어떤 아이는 이름도 처음 듣는 먼 지방에서 왔다.'),
+    P('이 아이들은 네 경쟁자다. 왕은 한 사람만 고른다. 하지만 이 1년을 어떻게 쓸지는 아직 네 마음이다.'),
+    B('에스더 2:12~14', '성경은 이 1년 동안 에스더가 누구와 어떻게 지냈는지 적지 않았다.')
+  ],
+  c:[
+    {tag:'이름을 외운다', x:'한 명씩 이름을 외운다. 어디서 왔는지, 집에 누가 남아 있는지까지.',
+     e:{mang:2}, echo:'그 아이들 중 몇 명은 나중에 궁의 시녀로 남았다. 왕비의 방을 드나드는 손은 그렇게 만들어진다.', to:'a2-4'},
+    {tag:'거리를 둔다', x:'아무와도 가까워지지 않는다. 가까워지면 네 비밀을 알게 된다.',
+     e:{chong:1}, echo:'아무도 네 뒤를 캐지 않았다. 대신 아무도 네 편이 아니었다.', to:'a2-4'},
+    {tag:'말을 배운다', x:'아이들에게서 각 지방 말을 배운다. 이 나라는 글자가 스무 가지가 넘는다.',
+     e:{mang:1, dam:1}, echo:'나중에 왕의 편지를 읽을 때, 너는 통역을 거치지 않아도 되었다.', to:'a2-4'}
+  ]},
+
+'a2-4':{act:2, title:'왕 앞에 선 밤',
+  t:[
+    P('네 차례가 온다. 왕궁 깊은 방, 등불 하나, 그리고 127개 지방을 가진 남자.'),
+    P('그는 지쳐 있다. 반년짜리 잔치를 치른 사람은 아무도 믿지 않는다. 와스디 일이 있은 뒤로는 더 그렇다.'),
+    P('그가 너를 본다. 밤이 길다.'),
+    B('에스더 2:16~17', '성경은 그 밤에 무슨 말이 오갔는지 적지 않았다.')
+  ],
+  c:[
+    {tag:'듣는다', x:'아무것도 묻지 않는다. 그가 먼저 말할 때까지 기다린다.',
+     e:{chong:2}, echo:'그는 오래 말했다. 아무도 자기 말을 끝까지 들어 준 적이 없던 사람처럼.', to:'a2-5'},
+    {tag:'와스디를 묻는다', x:'와스디는 어떻게 됐느냐고 묻는다. 이 방에서 그 이름을 꺼낸 사람은 아무도 없었다.',
+     e:{dam:2, chong:-1, ui:1}, echo:'그는 잔을 내려놓았다. 그 밤 뒤로 왕은 너를 조금 무서워했다.', to:'a2-5'},
+    {tag:'나라를 묻는다', x:'인도에서 이집트까지, 그 땅들의 이름을 하나씩 묻는다.',
+     e:{chong:1, mang:1}, echo:'그는 지도를 가져오게 했다. 왕이 자기 나라를 손가락으로 짚어 보여 주는 밤은 흔치 않다.', to:'a2-5'}
+  ]},
+
+'a2-5':{act:2, title:'왕관',
+  t:[
+    P('왕은 다른 누구보다 에스더를 사랑했다. 그래서 네 머리에 왕비의 관을 씌우고 와스디 대신 왕비로 삼는다.'),
+    P('큰 잔치가 열리고, 각 지방의 세금이 면제되고, 상이 내려진다.'),
+    P('너는 끝까지 네가 유대인이라는 말을 하지 않는다. 모르드개가 그렇게 하라고 했기 때문이다.'),
+    P('모르드개는 여전히 왕궁 문 앞에 앉는다. 네가 왕비가 된 뒤에도 그는 자리를 옮기지 않았다. 문은 소식이 지나가는 곳이기 때문이다.'),
+    B('에스더 2:17~20', '에스더가 왕비가 되고도 민족을 밝히지 않은 대목')
+  ],
+  c:[{go:true, x:'그 무렵 문 앞에서 한 가지 일이 있었다', to:'a2-6'}]},
+
+'a2-6':{act:2, title:'왕을 죽이려는 계획', must:true,
+  t:[
+    P('문을 지키던 왕의 신하 두 명이 왕에게 앙심을 품고, 왕을 죽일 계획을 세운다. 모르드개가 그걸 엿듣고 네게 알린다.'),
+    T('이 소식을 왕에게 전하는 방법은 여러 가지다. 궁궐에서는 소식에 반드시 <b>주인 이름</b>이 붙는다. 누구 이름으로 전하느냐에 따라, 이 일은 나중에 전혀 다른 무게가 된다.'),
+    M('📖 <b>이 장면은 성경에 분명히 적혀 있다.</b> 성경과 다르게 고르면 당장은 아무 일도 없다. 대신 <b>6막에서 이야기가 끝난다.</b>'),
+    B('에스더 2:21~23', '"에스더가 모르드개의 이름으로 왕에게 아뢴지라"')
+  ],
+  c:[
+    {tag:'오빠 이름으로', x:'모르드개가 알아낸 일이라고 분명히 말한다.',
+     e:{mang:1}, f:{credit:true}, canon:true,
+     b:'에스더는 모르드개의 이름으로 왕에게 알렸다. 그 이름이 기록책에 적혔고, 6장에서 그 한 줄이 모든 것을 뒤집는다.', bref:'에 2:22 · 6:2',
+     echo:'조사해 보니 사실이었다. 서기관이 왕 앞에서 기록책에 적었다. 모르드개라는 이름과 함께.', to:'a3-1'},
+    {tag:'내 이름으로', x:'왕비가 직접 알아낸 일로 말한다. 왕에게 잘 보이는 쪽이 낫다.',
+     e:{chong:2}, f:{credit:false},
+     b:'성경에서는 에스더가 모르드개의 이름으로 알렸다. 그래서 그 이름이 기록책에 남았다.', bref:'에 2:22',
+     echo:'왕은 네 손을 오래 잡았다. 기록책에는 왕비의 이름이 적혔다. 문 앞에 앉은 사람 이름은 어디에도 없었다.', to:'a3-1'},
+    {tag:'하닥을 시켜서', x:'심부름꾼 하닥에게 흘려보낸다. 왕비의 방이 이런 일에 얽히지 않게.',
+     e:{mang:1, ui:-1}, f:{credit:false},
+     b:'성경에서는 에스더가 모르드개의 이름으로 알렸다. 깨끗하게 처리하는 것보다 이름을 남기는 게 중요했다.', bref:'에 2:22',
+     echo:'일은 깨끗하게 처리됐다. 너무 깨끗해서, 이 일로 이름이 남은 사람은 아무도 없었다.', to:'a3-1'}
+  ]},
+
+/* ── 3막 ───────────────────────────────────────── */
+'a3-1':{act:3, title:'하만',
+  t:[
+    P('그 뒤에 왕은 하만이라는 신하를 모든 신하보다 높은 자리에 올린다. 그리고 명령한다. 왕궁 문에 있는 사람은 모두 하만에게 무릎 꿇고 절하라고.'),
+    P('하만의 집안은 아각 사람이다. 아주 오래전 유대인과 전쟁을 했던 민족이고, 아각은 그 민족 왕의 이름이었다. 몇백 년 묵은 원한이다.'),
+    P('모르드개는 무릎을 꿇지 않는다. 절도 하지 않는다.'),
+    P('사람들이 날마다 말려도 듣지 않는다. 그러자 사람들이 하만에게 일러바친다. 모르드개가 자기는 유대인이라고 말했기 때문이다.'),
+    B('에스더 3:1~6', '하만이 높아지고 모르드개가 절하지 않은 대목 · 아각 이야기는 사무엘상 15장')
+  ],
+  c:[{go:true, x:'며칠 뒤, 하만이 왕비의 방에 들른다', to:'a3-2'}]},
+
+'a3-2':{act:3, title:'하만이 찾아오다',
+  t:[
+    P('하만은 예의가 완벽하다. 예의가 완벽한 사람은 대개 무언가를 재고 있다. 그는 방 안을 둘러보고, 시녀들의 얼굴을 보고, 네 손을 본다.'),
+    S('하만','왕비님은 어느 지방에서 오셨습니까? 제가 127개 지방 말씨를 다 알아듣는 재주가 있는데, 왕비님 말씨만은 도무지 짚이지 않는군요.'),
+    P('그는 웃고 있다.'),
+    B('에스더 3:5~6', '이 장면은 성경에 없다. 무엇을 골라도 괜찮지만, 하만의 의심이 크게 움직인다.')
+  ],
+  c:[
+    {tag:'높여 준다', x:'그를 깍듯이 대한다. 왕이 높인 사람을 왕비가 낮출 이유는 없다고.',
+     e:{chong:1, mang:-1, ui:-2}, echo:'하만은 만족해서 돌아갔다. 만족한 사람은 더 캐묻지 않는다.', to:'a3-3'},
+    {tag:'대답하지 않는다', x:'입을 다문다. 왕비의 출신을 신하가 물을 일이 아니다.',
+     e:{dam:1, ui:2}, echo:'그는 나가면서 한 번 더 뒤를 돌아봤다. 대답하지 않는 것도 대답이다.', to:'a3-3'},
+    {tag:'되묻는다', x:'아각이라는 이름은 어느 지방 말이냐고 되묻는다.',
+     e:{mang:1, dam:1, ui:1}, echo:'그의 웃음이 아주 잠깐 멎었다. 이 사람은 오래된 이야기를 아직 끝내지 않았다.', to:'a3-3'}
+  ]},
+
+'a3-3':{act:3, title:'제비를 뽑다',
+  t:[
+    P('하만은 날짜를 정하려고 제비를 뽑는다. 열두째 달 13일이 나왔다. 열한 달 뒤다.'),
+    S('하만','이 나라 곳곳에 흩어져 사는 민족이 하나 있습니다. 법이 우리와 달라서 왕의 법을 지키지 않습니다. 그냥 두면 왕께 손해입니다. 없애 버리십시오. 비용은 제가 내겠습니다.'),
+    P('왕은 묻지 않는다. 어느 민족인지도 묻지 않는다. 자기 도장 반지를 빼서 하만에게 준다.'),
+    S('아하수에로','그 돈은 네가 가져라. 그 백성도 네 마음대로 해라.'),
+    P('편지가 써진다. 열두째 달 13일 하루 동안 유대인을 모두 죽이라고. 어린아이도 여자도 빼지 말라고. 127개 지방으로 말 탄 사람들이 달려 나간다.'),
+    P('편지가 수산 성에 붙었다. 성안 사람들은 어리둥절했다. 왕과 하만은 앉아서 술을 마셨다.'),
+    B('에스더 3:7~15', '특히 15절 — "왕과 하만은 함께 앉아 마시되 수산성은 어지럽더라"')
+  ],
+  c:[{go:true, x:'그 며칠 동안, 궁 안의 왕비는', to:'a3-4'}]},
+
+'a3-4':{act:3, title:'궁 안에서는',
+  t:[
+    P('왕비의 방은 조용하다. 그 편지는 왕비에게 오지 않는다. 궁궐 안쪽은 소식이 가장 늦게 닿는 곳이다.'),
+    P('너는 아직 아무것도 모른다.'),
+    P('네가 아는 건 이것뿐이다. 왕이 너를 부르지 않은 지 꽤 오래됐다는 것.'),
+    B('에스더 4:1', '성경은 이 며칠 동안 에스더가 무엇을 했는지 적지 않았다.')
+  ],
+  c:[
+    {tag:'기다린다', x:'왕의 부름을 기다린다. 날짜를 센다.',
+     e:{chong:-1, dam:1}, echo:'서른 날째 되는 날, 너는 세기를 그만두었다.', to:'a4-1'},
+    {tag:'궁을 돌본다', x:'궁의 살림을 본다. 시녀와 관리들의 일을 하나하나 챙긴다.',
+     e:{mang:1}, echo:'네 방을 드나드는 사람이 늘었다. 그 사람들이 바깥 이야기를 안으로 들여온다.', to:'a4-1'},
+    {tag:'이름을 불러 본다', x:'오래 꺼내지 않은 이름을 혼자 불러 본다.',
+     e:{dam:1}, echo:'하닷사. 베어도 다시 자라는 나무 이름이다. 이 궁에서 그 이름을 아는 사람은 둘뿐이다.', to:'a4-1'}
+  ]},
+
+/* ── 4막 ───────────────────────────────────────── */
+'a4-1':{act:4, title:'거친 옷을 입은 오빠',
+  t:[
+    P('시녀 하나가 뛰어 들어온다. 얼굴이 하얗다.'),
+    P('모르드개가 옷을 찢고, 자루처럼 거친 옷을 입고, 머리에 재를 뒤집어쓰고 성 한가운데서 크게 울고 있다는 것이다. 왕궁 문 앞까지 왔다고 한다.'),
+    P('그런 옷을 입은 사람은 왕궁 문 안으로 들어올 수 없다. 그래서 그는 문 앞에서 멈춘다.'),
+    P('소식이 닿은 지방마다 유대인들이 울고 금식하고 있다고 한다.'),
+    P('너는 아직 그 편지를 읽지 못했다.'),
+    B('에스더 4:4~5', '에스더는 옷을 보냈고, 받지 않자 하닥을 보냈다. 둘 다 성경에 있다.')
+  ],
+  c:[
+    {tag:'옷을 보낸다', x:'옷을 보내서 갈아입히려 한다. 그 옷을 벗어야 문 안으로 들어올 수 있으니까.',
+     e:{}, echo:'모르드개는 받지 않았다. 그는 옷을 바꾸러 온 게 아니었다.', to:'a4-2'},
+    {tag:'직접 나간다', x:'왕비의 몸으로 왕궁 문까지 걸어 나간다.',
+     e:{dam:1, ui:1}, echo:'왕비가 거친 옷 입은 유대인 노인 앞에 섰다는 말은, 그날 저녁 하만의 집에도 닿았다.', to:'a4-2'},
+    {tag:'하닥을 보낸다', x:'심부름꾼 하닥을 보내서 무슨 일인지 알아 오게 한다.',
+     e:{mang:1}, echo:'하닥이 광장으로 나갔다. 네 사람들 중에 발이 제일 빠른 사람이었다.', to:'a4-2'}
+  ]},
+
+'a4-2':{act:4, title:'하닥이 가져온 것',
+  t:[
+    P('하닥이 돌아온다. 손에 편지 사본이 들려 있다. 유대인을 모두 죽이라는 그 편지다. 하만이 왕에게 내겠다고 한 돈 액수까지 적혀 있다.'),
+    P('모르드개의 말도 함께 온다. 왕에게 가서 네 민족을 살려 달라고 빌라는 것이다.'),
+    P('너는 그 편지를 읽는다. 열두째 달 13일. 어린아이도 여자도 빼지 말라고.'),
+    T('그런데 네가 아는 법이 하나 더 있다. <b>부르지 않았는데 왕 앞에 나가는 사람은 남자든 여자든 죽는다.</b> 왕이 금 지팡이를 내밀어 주면 산다. 그런데 왕이 너를 부르지 않은 지 벌써 30일이다.'),
+    B('에스더 4:11', '에스더가 그 법과 삼십 일을 그대로 말한 절')
+  ],
+  c:[
+    {tag:'법을 말한다', x:'그 법을 그대로 전한다. 나도 죽을 수 있다고.',
+     e:{}, echo:'하닥이 그 말을 가지고 다시 문으로 나갔다. 너는 그 등을 오래 보았다.', to:'a4-3'},
+    {tag:'가겠다고 한다', x:'가겠다고 한다. 날짜 셀 것 없이 지금 가겠다고.',
+     e:{dam:2, chong:-1}, echo:'하닥이 멈춰 섰다. 그는 왕비를 말리러 온 사람이 아니었지만, 말리고 싶어 했다.', to:'a4-3'},
+    {tag:'다른 길을 찾는다', x:'다른 방법을 찾아보자고 한다. 신하들, 관리들, 왕과 가까운 사람들.',
+     e:{mang:1}, echo:'하닥은 고개를 저었다. 왕의 도장 반지를 가진 사람과 맞설 사람은 궁에 없다.', to:'a4-3'}
+  ]},
+
+'a4-3':{act:4, title:'혹시 이때를 위해서가 아닐까', must:true,
+  t:[
+    P('모르드개의 답장이 온다. 하닥은 한 글자도 바꾸지 않고 그대로 전한다.'),
+    Q('이 때에 네가 만일 잠잠하여 말이 없으면 유다인은 다른 데로 말미암아 놓임과 구원을 얻으려니와 너와 네 아버지 집은 멸망하리라 네가 왕후의 자리를 얻은 것이 이 때를 위함이 아닌지 누가 알겠느냐', '에스더 4:14, 개역개정'),
+    P('방이 조용하다. 아직 아무 일도 일어나지 않았다. 그날까지는 열한 달이 남았다.'),
+    P('열한 달은 모른 척하기에 충분히 긴 시간이다.'),
+    st => '지금 네 용기는 ' + st.dam + ', 궁궐 사람들은 ' + st.mang + '이다.',
+    M(MUSTBOX),
+    B('에스더 4:13~16', '성경이 이 이야기에서 유일하게 "만약에"를 말하는 자리')
+  ],
+  c:[
+    {tag:'가겠다', x:'수산에 있는 유대인을 모아 3일 동안 금식하게 하고, 나도 똑같이 하겠다고 전한다. 그리고 법을 어기고 왕에게 가겠다고.',
+     req:st => st.dam >= 5 || st.mang >= 7,
+     lock:st => '이 말을 하려면 용기 5 또는 궁궐 사람들 7이 필요하다. (지금 용기 ' + st.dam + ', 궁궐 사람들 ' + st.mang + ')',
+     e:{dam:2, mang:1}, canon:true,
+     b:'에스더는 금식을 부탁하고 왕에게 갔다. "죽으면 죽으리이다"가 그 대답이다.', bref:'에 4:16',
+     to:'a4-4'},
+    {tag:'물러선다', x:'아직 열한 달이 남았다고 답한다. 왕의 마음이 바뀔 날이 올지도 모른다고.',
+     e:{}, to:'E.silence'}
+  ]},
+
+'a4-4':{act:4, title:'3일',
+  t:[
+    P('하닥이 그 말을 가지고 나간다. 모르드개가 성안의 유대인을 모은다. 3일 동안 먹지도 마시지도 않는다. 왕비의 방에서도 시녀들이 함께 그렇게 한다.'),
+    P('에스더기에는 기도라는 말이 없다. 하나님이라는 말도 한 번 나오지 않는다. 다만 아무것도 먹지 않았다는 말이 있다.'),
+    P('3일 동안, 세상에서 제일 큰 나라 한가운데서 한 무리가 아무것도 먹지 않았다.'),
+    Q('죽으면 죽으리이다', '에스더 4:16, 개역개정'),
+    B('에스더 4:15~17', '삼 주야 금식과 그 한마디')
+  ],
+  c:[{go:true, x:'사흘째 되는 날', to:'a5-1'}]},
+
+/* ── 5막 ───────────────────────────────────────── */
+'a5-1':{act:5, title:'안뜰',
+  t:[
+    P('사흘째 되는 날, 너는 왕비의 옷을 입는다. 사흘을 굶은 몸에 그 옷은 무겁다.'),
+    P('왕궁 안뜰 맞은편에 선다. 왕은 저쪽 끝 자리에 앉아 문 쪽을 보고 있다.'),
+    P('너와 왕 사이에는 금 지팡이를 든 손 하나와, 부르지 않은 사람을 죽이라는 법 하나가 놓여 있다.'),
+    P('뜰을 지키는 사람들이 너를 본다. 아무도 막지 않는다. 막을 필요가 없기 때문이다. 법이 알아서 할 일이니까.'),
+    st => {
+      const hard = st.ui >= 4;
+      const need = hard ? '왕의 마음 6 또는 궁궐 사람들 8' : '왕의 마음 4 또는 궁궐 사람들 6';
+      const warn = hard ? ' 하만의 의심이 ' + st.ui + '까지 올라서, 그가 미리 왕에게 왕비 이야기를 나쁘게 해 두었다. 그래서 오늘은 더 어렵다.' : '';
+      return '<span style="color:var(--gold-2)">지금 왕의 마음 ' + st.chong + ', 궁궐 사람들 ' + st.mang + '. 살아 나오려면 ' + need + '이 필요하다.' + warn + '</span>';
+    },
+    B('에스더 5:1', '제삼일에 왕후의 예복을 입고 안뜰에 선 대목')
+  ],
+  c:[{go:true, x:'안뜰로 걸어 들어간다',
+      to: st => {
+        const ok = st.ui >= 4 ? (st.chong >= 6 || st.mang >= 8) : (st.chong >= 4 || st.mang >= 6);
+        return ok ? 'a5-2' : 'E.scepter';
+      }}]},
+
+'a5-2':{act:5, title:'금 지팡이', must:true,
+  t:[
+    P('왕이 뜰에 서 있는 왕비를 본다.'),
+    P('그가 손에 들고 있던 금 지팡이를 너에게 내민다. 너는 다가가서 그 끝을 만진다.'),
+    S('아하수에로','왕비 에스더여, 무슨 일이오? 무엇을 원하오? 이 나라의 절반이라도 주겠소.'),
+    T('살았다. 그런데 여기서가 진짜다. 이 방에는 둘뿐이지만, 방 밖에는 <b>왕의 도장 반지를 낀 사람</b>이 있다. 지금 그 이름을 부르면, 그 사람에게는 변명할 하룻밤이 생긴다.'),
+    M(MUSTBOX),
+    B('에스더 5:2~8', '에스더가 두 번이나 미루고 잔치로 부른 대목')
+  ],
+  c:[
+    {tag:'잔치에 부른다', x:'오늘 제가 잔치를 차렸으니 하만과 함께 와 달라고 청한다. 말은 나중에 하겠다고.',
+     e:{mang:1, ui:-1}, canon:true,
+     b:'에스더는 그 자리에서 말하지 않고 잔치에 초대했다. 그리고 잔치에서 한 번 더 미뤘다. 그 하루가 6장의 밤을 만들었다.', bref:'에 5:4, 5:8',
+     echo:'왕이 하만을 급히 불러오게 했다. 하만은 왕비의 잔치에 불린 단 한 명의 신하가 되었다.', to:'a5-3'},
+    {tag:'지금 고발한다', x:'지금 바로 말한다. 반지를 낀 사람이 내 민족을 팔았다고.',
+     e:{dam:2, ui:3}, to:'E.night'},
+    {tag:'하만을 뺀다', x:'하만은 빼고 왕에게만 따로 말할 자리를 달라고 한다.',
+     e:{mang:1, ui:2}, to:'E.night'}
+  ]},
+
+'a5-3':{act:5, title:'첫 번째 잔치',
+  t:[
+    P('술을 마실 때 왕이 또 묻는다. 무엇을 원하느냐고. 나라의 절반이라도 주겠다고.'),
+    P('너는 한 번 더 미룬다. 내일 왕과 하만이 다시 와 주시면 그때 말씀드리겠다고.'),
+    P('하만은 기분이 좋아서 나간다. 그러다 왕궁 문에서 모르드개를 본다. 모르드개는 일어나지도 않고 꿈쩍도 하지 않는다. 하만은 화가 머리끝까지 난다.'),
+    P('집에 돌아가 친구들과 아내 세레스를 불러 놓고 자기 자랑을 한다. 재산이며 자식이며, 왕이 자기를 제일 높은 자리에 올려 준 일까지.'),
+    S('하만','왕비님 잔치에 불린 신하는 나 하나뿐이오. 내일도 또 불렀소. 그런데 저 유대인 모르드개가 문에 앉아 있는 걸 보면, 이 모든 게 하나도 기쁘지 않소.'),
+    S('세레스','22미터짜리 나무를 세우세요. 내일 왕께 모르드개를 거기 매달게 해 달라고 하시고, 그다음에 기분 좋게 잔치에 가시면 되잖아요.'),
+    P('하만은 그 말이 마음에 들었다. 그래서 나무를 세웠다.'),
+    B('에스더 5:9~14', '오십 규빗 나무를 세운 대목. 오십 규빗은 약 22미터다.')
+  ],
+  c:[{go:true, x:'그 밤에', to:'a6-1'}]},
+
+/* ── 6막 ───────────────────────────────────────── */
+'a6-1':{act:6, title:'그 밤에',
+  t:[
+    P('그 밤에 왕은 잠이 오지 않았다.'),
+    P('에스더기에서 제일 짧은 문장이다. 왜 잠이 안 왔는지는 적혀 있지 않다. 이 책에는 기적이 한 번도 안 나온다. 나오는 건 우연뿐이다.'),
+    P('왕비의 방도 등불이 꺼지지 않는다. 내일 무슨 일이 일어날지 아무도 모른다.'),
+    P('이 밤을 어떻게 쓸까?'),
+    B('에스더 6:1', '"이 밤에 왕이 잠이 오지 아니하므로" · 이 장면은 성경에 없다.')
+  ],
+  c:[
+    {tag:'금식을 이어 간다', x:'사흘째 금식을 계속한다. 아무것도 하지 않고 아침까지 깨어 있는다.',
+     e:{dam:2}, echo:'아무 일도 일어나지 않았다. 아무것도 하지 않은 채로 너는 아침을 봤다.',
+     to: st => st.flags.credit ? 'a6-2' : 'a6-2n'},
+    {tag:'하르보나를 부른다', x:'신하 하르보나를 부른다. 하만의 집 마당에서 밤새 망치 소리가 난다는 말을 들었다.',
+     e:{mang:2}, f:{harbona:true},
+     echo:'하르보나가 새벽에 돌아왔다. 22미터라고 했다. 성벽 위에서도 보일 높이라고.',
+     to: st => st.flags.credit ? 'a6-2' : 'a6-2n'},
+    {tag:'헤개를 부른다', x:'나이 든 헤개를 부른다. 오늘 밤 왕의 방은 어떤지 묻는다.',
+     e:{chong:1, mang:1}, echo:'헤개가 말했다. 왕이 잠이 안 와서 기록책을 가져오게 했다고.',
+     to: st => st.flags.credit ? 'a6-2' : 'a6-2n'}
+  ]},
+
+'a6-2':{act:6, title:'기록책',
+  t:[
+    P('왕이 기록책을 가져오게 해서 읽게 한다. 서기관이 두루마리를 편다. 몇 년 전 기록, 그다음 해 기록. 그러다 한 줄에 닿는다.'),
+    P('문을 지키던 신하 두 명이 왕을 죽이려 한 것을 모르드개가 알렸다는 줄이다.'),
+    S('아하수에로','이 일로 모르드개에게 무슨 상을 주었느냐?'),
+    S('신하들','아무것도 주지 않았습니다.'),
+    T('<b>2막에서 네가 오빠 이름으로 알렸기 때문이다.</b> 왕에게 잘 보일 수도 있었던 그 밤에, 너는 공을 네 것으로 하지 않았다. 그 선택이 지금 돌아왔다.'),
+    B('에스더 6:1~3', '기록책에서 모르드개의 이름이 나오는 대목')
+  ],
+  c:[{go:true, x:'새벽에, 뜰에서 발소리가 난다', to:'a6-3'}]},
+
+'a6-2n':{act:6, title:'비어 있는 줄',
+  t:[
+    P('왕이 기록책을 가져오게 해서 읽게 한다. 서기관이 두루마리를 편다. 왕을 죽이려던 계획 이야기도 거기 있다.'),
+    P('그런데 그 줄에는 왕비의 이름이 적혀 있다. 아니면 아무 이름도 없다. 왕궁 문 앞에 앉은 사람의 이름은 그 두루마리 어디에도 없다.'),
+    S('아하수에로','이미 상을 받은 일이구나. 다음을 읽어라.'),
+    P('두루마리가 넘어간다. 바깥에서는 밤새 망치 소리가 났다. 22미터는 성벽 위에서도 보이는 높이다.'),
+    B('에스더 6:2', '성경에서는 바로 이 줄에 모르드개의 이름이 적혀 있다.')
+  ],
+  c:[{go:true, x:'아침이 온다', e:{ui:3}, to:'E.doorstep'}]},
+
+'a6-3':{act:6, title:'왕이 기뻐하는 사람',
+  t:[
+    P('하만이 아침 일찍 바깥뜰에 들어온다. 자기가 세운 나무에 모르드개를 매달게 해 달라고 청하러 온 것이다.'),
+    P('왕이 먼저 묻는다. 내가 아주 기쁘게 해 주고 싶은 사람이 있는데, 어떻게 해 주면 좋겠느냐고.'),
+    P('하만은 속으로 생각한다. 나 말고 누구를 그렇게 해 주시겠어?'),
+    S('하만','왕의 옷을 입히시고, 왕의 말에 태우시고, 머리에 왕관을 씌우십시오. 그리고 제일 높은 신하 한 명에게 말고삐를 잡게 해서 성안 거리를 돌며 외치게 하십시오.'),
+    S('아하수에로','좋다. 그럼 네 말대로 빨리 그렇게 해라. 왕궁 문에 앉아 있는 유대인 모르드개에게. 네가 말한 것 중에 하나도 빠뜨리지 말고.'),
+    P('하만은 모르드개를 말에 태우고 성안 거리를 돌며 그 말을 외친다. 그러고는 머리를 싸매고 집으로 돌아간다.'),
+    S('세레스','모르드개가 유대인이라면, 당신은 이제 그 사람을 못 이겨요. 지는 쪽은 당신이에요.'),
+    P('그 말이 끝나기도 전에 왕의 신하들이 와서 하만을 왕비의 잔치로 데려간다.'),
+    B('에스더 6:4~14', '하만이 제 입으로 고른 영예를 원수에게 입힌 대목')
+  ],
+  c:[{go:true, x:'두 번째 잔치', to:'a7-1'}]},
+
+/* ── 7막 ───────────────────────────────────────── */
+'a7-1':{act:7, title:'무슨 말로 말할까',
+  onEnter: st => {
+    if(st.ui >= 6){ st.chong = Math.max(0, st.chong - 1); return {chong:-1}; }
+    return null;
+  },
+  t:[
+    P('왕과 하만이 왕비의 잔치 자리에 온다. 둘째 날에도 술을 마실 때 왕이 또 묻는다.'),
+    S('아하수에로','왕비 에스더여, 무엇을 원하오? 말만 하면 들어주겠소. 이 나라의 절반이라도.'),
+    P('하만이 상 건너편에 앉아 있다. 그는 오늘 아침에 모르드개를 말에 태웠고, 왜 그런 일이 생겼는지 아직 모른다.'),
+    P('이제 한 문장이면 된다. 그 한 문장을 어떻게 세울까?'),
+    B('에스더 7:1~6', '세 가지 다 에스더가 실제로 한 말 안에 들어 있다. 순서만 다르다.')
+  ],
+  cond:[
+    {when:st => st.ui >= 6, t:[
+      T('하만의 의심이 너무 높았다. 그는 오는 길에 왕에게 왕비의 출신이 수상하다고 귀띔해 두었다. <b>왕의 마음이 1 깎였다.</b>')]}
+  ],
+  c:[
+    {tag:'손해를 말한다', x:'저와 제 민족이 팔려서 죽게 되었습니다. 그냥 노비로 팔렸다면 가만히 있었을 겁니다.',
+     e:{mang:1},
+     b:'에스더가 제일 먼저 꺼낸 말이다. 왕은 셈을 하는 사람이었다.', bref:'에 7:4',
+     echo:'왕은 셈을 하는 사람이다. 하만이 내겠다던 돈이 그의 머릿속에서 다시 계산되기 시작했다.', to:'a7-2'},
+    {tag:'내 민족이라고 말한다', x:'제 목숨을 살려 주시고, 제 민족도 살려 주십시오. 그 민족이 바로 제 민족입니다.',
+     e:{dam:2},
+     b:'에스더가 한 말이다. 성경에서는 손해 이야기를 먼저 꺼낸 다음이었다.', bref:'에 7:3~4',
+     echo:'그 방에서 처음으로, 왕비가 어느 민족인지를 입 밖에 낸 사람은 왕비 자신이었다.', to:'a7-2'},
+    {tag:'이름을 부른다', x:'그 사람은 바로 이 하만입니다.',
+     e:{dam:1, chong:-1},
+     b:'에스더가 한 말이다. 성경에서는 왕이 먼저 "그가 누구냐"고 물은 다음이었다.', bref:'에 7:5~6',
+     echo:'하만이 왕과 왕비 앞에서 벌벌 떨었다. 이름이 불린 순간에만 사람은 그렇게 작아진다.', to:'a7-2'}
+  ]},
+
+'a7-2':{act:7, title:'정원으로 나간 왕',
+  t:[
+    P('왕이 화가 나서 일어나 정원으로 나간다. 아직 결정하지 못한 것이다. 반지를 준 것도 자기고, 그 편지를 허락한 것도 자기니까.'),
+    P('하만은 왕비에게 매달려 목숨을 구걸한다. 왕이 자기를 어떻게 할지 이미 마음먹은 걸 봤기 때문이다.'),
+    P('왕이 정원에서 돌아온다. 하만이 에스더가 앉은 자리 위로 엎어져 있다.'),
+    S('아하수에로','이 자가 내 앞에서 왕비까지 해치려 하는구나!'),
+    P('그 말이 왕의 입에서 나오자마자 사람들이 하만의 얼굴을 덮었다.'),
+    B('에스더 7:7~8', '왕이 후원으로 나갔다 돌아온 대목')
+  ],
+  c:[{go:true, x:'그때 신하 하나가 입을 연다', to:'a7-3'}]},
+
+'a7-3':{act:7, title:'22미터 나무',
+  t:[
+    P('왕을 모시던 신하 하르보나가 말한다.'),
+    S('하르보나','하만의 집에 22미터짜리 나무가 서 있습니다. 왕을 살린 모르드개를 매달려고 세운 것입니다.'),
+    S('아하수에로','하만을 거기 매달아라.'),
+    P('모르드개를 매달려고 세운 나무에 하만이 매달렸다. 그제야 왕의 화가 풀렸다.'),
+    B('에스더 7:9~10', '하르보나가 나무 이야기를 꺼낸 대목')
+  ],
+  cond:[{when:st => st.flags.harbona, t:[
+    T('하르보나는 망설이지 않았다. <b>6막에서 네가 그를 보내 그 나무를 미리 재어 두게 했기 때문이다.</b>')]}],
+  c:[{go:true, x:'그날', to:'a8-1'}]},
+
+/* ── 8막 ───────────────────────────────────────── */
+'a8-1':{act:8, title:'도장 반지',
+  t:[
+    P('그날 왕은 하만의 집을 에스더에게 준다. 그리고 모르드개가 왕 앞에 불려 온다. 에스더가 모르드개와 자기가 어떤 사이인지 그제야 말했기 때문이다.'),
+    P('왕은 하만에게서 되찾은 도장 반지를 빼서 모르드개에게 준다.'),
+    P('반지가 주인을 바꿨다. 그런데 그 반지로 도장 찍힌 편지는 아직도 127개 지방을 달리는 중이다.'),
+    B('에스더 8:1~2', '반지가 모르드개에게 넘어가는 대목')
+  ],
+  c:[{go:true, x:'왕 앞에 엎드려', to:'a8-2'}]},
+
+'a8-2':{act:8, title:'되돌릴 수 없는 종이', must:true,
+  t:[
+    P('에스더가 다시 왕 앞에 엎드려 운다. 하만이 꾸민 일을 없던 것으로 해 달라고.'),
+    S('에스더','괜찮으시다면, 하만이 쓴 그 편지를 취소해 주십시오.'),
+    S('아하수에로','왕의 이름으로 쓰고 왕의 도장으로 찍은 편지는 아무도 취소하지 못한다. 그러나 너희가 왕의 이름으로 유대인에게 새 편지를 쓰고, 내용은 너희 마음대로 정해라. 그리고 이 반지로 찍어라.'),
+    T('1막에서 배운 그 규칙이다. <b>한번 도장 찍힌 종이는 되돌릴 수 없다.</b> 그래서 취소 대신, 그 위에 덮어쓸 두 번째 편지를 쓴다.'),
+    M(MUSTBOX),
+    B('에스더 8:8, 8:11', '두 번째 편지가 첫 번째 편지와 똑같이 세게 쓰인 대목')
+  ],
+  c:[
+    {tag:'성경 그대로', x:'첫 번째 편지와 똑같이 세게 쓴다. 모여서 맞서고, 재산까지 빼앗아도 된다고.',
+     e:{dam:1}, canon:true,
+     b:'성경의 두 번째 편지가 바로 이렇다. 세게 쓴 이유가 있다. 그 편지를 읽은 사람들이 겁을 먹어서, 많은 지방에서는 아무도 덤비지 못했다. 그리고 유다인은 세 번 다 재산에 손을 대지 않았다.', bref:'에 8:11, 8:17 · 9:10, 15, 16',
+     echo:'서기관의 붓이 빨라졌다. 그는 열한 달 전에 똑같은 문장을 쓴 사람이었다. 이번에는 방향이 반대였다.', to:'a8-3'},
+    {tag:'지키기만', x:'모여서 자기 목숨을 지키게만 하라. 먼저 치러 오는 사람에게만 맞서라고.',
+     e:{mang:1}, to:'E.narrow'},
+    {tag:'더 넓게', x:'하만이 쓴 문장을 그대로 뒤집어라. 먼저 쳐도 된다고.',
+     e:{dam:1, ui:1}, to:'E.wide'}
+  ]},
+
+'a8-3':{act:8, title:'말 탄 사람들',
+  t:[
+    P('서기관들이 불려 온다. 새 편지가 써진다. 127개 지방으로, 지방마다 그 글자와 그 말로. 유대인에게는 유대인 글자와 말로.'),
+    P('왕의 이름으로 쓰고 왕의 도장 반지로 찍는다. 그리고 왕궁에서 기른 제일 빠른 말에 태워 내보낸다.'),
+    P('모르드개가 파랗고 흰 옷에 큰 금관을 쓰고 왕 앞에서 나온다. 수산 성이 소리를 지르며 기뻐한다.'),
+    P('그리고 지방마다 사람들이 그 편지를 읽는다. 읽고 나서 유대인을 무서워하게 된다. 무서워하는 사람은 먼저 덤비지 않는다.'),
+    B('에스더 8:16~17', '"많은 백성이 유다인을 두려워하여"')
+  ],
+  c:[{go:true, x:'열한 달이 지난다', to:'a9-1'}]},
+
+/* ── 9막 ───────────────────────────────────────── */
+'a9-1':{act:9, title:'뒤바뀐 날',
+  t:[
+    P('열두째 달 13일. 하만이 제비로 뽑았던 바로 그날이다.'),
+    P('유대인을 없애려던 사람들이 이기기를 바랐던 날인데, 그날이 뒤집혔다. 유대인이 각 지방에서 모여 자기를 해치려는 사람들에게 맞선다. 모르드개가 무서워서 아무도 막지 못했다.'),
+    P('수산 궁에서만 500명이 죽었다. 하만의 열 아들도 죽었다. 그런데 유대인은 그 사람들 재산에는 손을 대지 않았다. 성경은 이 말을 세 번이나 되풀이한다.'),
+    P('왕이 그 숫자를 듣고 에스더에게 묻는다. 또 원하는 게 있느냐고.'),
+    P('에스더는 수산에 하루를 더 달라고 한다. 그리고 하만의 열 아들을 나무에 매달아 달라고 한다. 다음 날 수산에서 300명이 더 죽었다.'),
+    T('성경은 에스더가 그렇게 청했다고 적는다. <b>왜 그랬는지는 적지 않는다.</b> 이 대목은 어른들도 읽기 어려워한다. 그래서 이 게임은 여기에 고를 것을 두지 않았다. 성경이 적은 대로만 지나간다.'),
+    B('에스더 9:10, 13, 15', '하루를 더 청한 대목과, 재산에 손대지 않았다는 말')
+  ],
+  c:[{go:true, x:'그리고 명절이 생긴다', to:'a9-3'}]},
+
+'a9-3':{act:9, title:'부림절', must:true,
+  t:[
+    P('유대인은 13일에 모여 자기 목숨을 지켰고, 14일에 쉬면서 잔치를 열고 기뻐했다.'),
+    P('모르드개가 이 일을 적어서 각 지방 유대인에게 편지를 보낸다. 해마다 그날을 지키자고.'),
+    P('명절 이름은 부림이 되었다. 하만이 날짜를 뽑으려고 던진 제비 이름이 그 민족 명절 이름이 된 것이다.'),
+    P('이 명절을 무엇을 하는 날로 정할지가 마지막으로 남았다.'),
+    M(MUSTBOX),
+    B('에스더 9:22', '"잔치를 베풀고 서로 예물을 주며 가난한 자를 구제하라"')
+  ],
+  c:[
+    {tag:'나누는 날', x:'잔치를 열고, 서로 선물을 주고받고, 가난한 사람을 돕는 날로 정한다.',
+     e:{mang:2}, canon:true,
+     b:'성경이 정한 그대로다. 선물을 주고받는 것만이 아니라 가난한 사람을 돕는 것까지가 이 명절이다.', bref:'에 9:22',
+     echo:'그래서 부림절에는 선물 꾸러미가 오간다. 그 꾸러미가 가난한 집에도 반드시 가야 명절이 완성된다.', to:'a10-1'},
+    {tag:'이긴 날', x:'적을 이긴 날로 기념한다. 해마다 그 숫자를 읽는 날로.',
+     e:{}, to:'E.numbers'},
+    {tag:'기억하는 날', x:'잔치 대신 그 3일의 금식을 기억하는 날로 정한다.',
+     e:{dam:1}, to:'E.numbers'}
+  ]},
+
+/* ── 10막 ───────────────────────────────────────── */
+'a10-1':{act:10, title:'마지막 세 줄',
+  t:[
+    P('아하수에로 왕은 온 나라와 바다 건너 섬들에까지 세금을 매겼다.'),
+    P('유대인 모르드개는 왕 다음가는 자리에 올랐다. 유대인들에게 존경받았고, 자기 민족이 잘되도록 애썼고, 모든 사람에게 좋은 말을 했다.'),
+    P('마지막 장은 세 줄로 끝난다. 그 세 줄에 왕비의 이름은 없다.'),
+    P('기록책은 반지를 낀 사람의 이름을 적는다. 사흘을 굶고 뜰에 선 사람의 이름은, 다른 데에 적힌다.'),
+    B('에스더 10:1~3', '세 절뿐인 마지막 장')
+  ],
+  c:[{go:true, x:'기록책을 덮는다', to:'ENDING'}]}
+
+};
+
+/* ───────────────────────── 결말 ───────────────────────── */
+const ENDINGS = {
+
+/* ── 성경과 다르게 골라서 끝나는 결말 ── */
+'E.unchosen':{
+  kicker:'2막에서 끝났습니다', sad:true, back:2,
+  backWhy:'헤개가 골라 주는 것만 받아 본다',
+  title:'다시 부름받지 못하다',
+  epi:'왕이 그 이름을 부르지 아니하면 다시는 나아가지 못하더라',
+  t:[
+    P('네 차례가 왔고, 너는 왕 앞에 섰다. 하룻밤이 지나고 너는 둘째 처소로 갔다.'),
+    P('왕은 네 이름을 부르지 않았다.'),
+    P('궁고를 비워 치장한 소녀도, 아무것도 걸치지 않고 간 소녀도 거기서는 똑같다. 왕이 이름을 부르지 않으면 두 번 다시 그 방에 못 간다.'),
+    P('너는 둘째 처소에서 늙었다. 열한 달 뒤 그날, 유대인에게 무슨 일이 일어났는지 그 방에서는 아무도 말해 주지 않았다.'),
+    P('왕관을 쓴 사람은 다른 소녀였다. 그 소녀는 유대인이 아니었다.')
+  ],
+  verdict:'한 번뿐인 기회에서, 너는 네 눈을 믿었다. 에스더는 자기 눈 대신 헤개의 눈을 빌렸다.',
+  says:['에스더는 왕에게 갈 때 헤개가 정해 준 것 말고는 아무것도 구하지 않았다.',
+        '궁에서 30년을 산 사람이 무엇이 왕의 눈에 드는지 제일 잘 안다. 에스더는 그걸 알았다.',
+        '그래서 성경은 바로 그 줄 뒤에 이렇게 적는다. 에스더를 보는 사람마다 그를 좋아했다고.'],
+  saysRef:'에스더 2:14~15'},
+
+'E.doorstep':{
+  kicker:'6막에서 끝났습니다', sad:true, back:2,
+  backWhy:'왕을 살린 공을 오빠 이름으로 돌려 본다',
+  title:'빈 문지방',
+  epi:'기록책에 그 이름이 없었다',
+  t:[
+    P('왕은 두루마리를 덮고 다시 잠을 청했다. 아무 일도 일어나지 않았다.'),
+    P('아침에 하만이 바깥뜰에 들어왔다. 왕은 기록책에서 그 이름을 보지 못했으니 거리낄 것이 없었다. 손을 흔들어 허락했다.'),
+    P('그 아침, 궁궐 안쪽에서 먼저 움직인 사람은 너였다. 헤개가 뛰었고 하닥이 뛰었다. 네가 몇 해 동안 이름을 외워 두고 살림을 챙겨 준 사람들이다. 왕의 명령을 되돌릴 수는 없지만, 그 명령이 문 앞에 닿는 시간을 늦출 수는 있었다.'),
+    P('모르드개는 매달리지 않았다. 대신 그날로 왕궁 문 앞 자리를 잃고 성 밖으로 쫓겨났다. 그 뒤로 소식이 끊겼다.'),
+    P('그날 저녁 잔치는 열렸다. 너는 하만 앞에서 입을 열지 못했다. 네가 누구인지 말해 줄 사람이 성 밖으로 사라진 뒤였다.'),
+    P('그해 열두째 달 13일에 무슨 일이 있었는지, 이 이야기는 적지 않는다.'),
+    P('모든 것은 2막의 그 밤에 갈라졌다. 왕을 살린 공을 누구 이름으로 돌릴지 정하던 그 밤에.')
+  ],
+  verdict:'공 하나를 네 것으로 돌린 값이, 네 해 뒤에 돌아왔다.',
+  says:['성경에서는 에스더가 모르드개의 이름으로 알렸다. 그래서 그 이름이 기록책에 적혔다.',
+        '여러 해 뒤 왕이 잠 못 들던 밤, 서기관이 하필 그 줄을 읽었다. 그 한 줄 때문에 하만은 제 손으로 모르드개를 왕의 말에 태워야 했다.',
+        '에스더기에서 가장 중요한 한 줄은, 에스더가 공을 자기 것으로 하지 않은 자리에서 생겼다.'],
+  saysRef:'에스더 2:22 · 6:1~11'},
+
+'E.silence':{
+  kicker:'4막에서 끝났습니다', sad:true, back:4,
+  backWhy:'용기와 궁궐 사람들을 더 쌓아서 그 말을 할 수 있게 해 본다',
+  title:'입을 다문 왕비',
+  epi:'유다인은 다른 데로 말미암아 놓임과 구원을 얻으려니와',
+  t:[
+    P('너는 가지 않았다. 하닥이 네 말을 가지고 문으로 나갔고, 모르드개는 두 번 다시 연락하지 않았다.'),
+    P('열한 달이 지났다. 그날 무슨 일이 있었는지, 궁궐 안쪽에는 소식이 제일 늦게 닿는다. 네가 들은 건 유대인 동네가 조용해졌다는 말뿐이었다.'),
+    P('그런데 지방에서는 사람들이 모였다고 한다. 누가 모았는지는 아무도 모른다. 구원은 다른 길로 왔다.'),
+    P('왕궁에는 왕비가 있었다. 이름이 두 개인 왕비가 하나 있었고, 그중 하나는 아무도 부르지 않았다. 왕궁 문 앞에 앉던 그 자리는 그해 겨울에 비었다.')
+  ],
+  verdict:'왕비 자리는 지켰다. 그런데 그 자리가 무엇을 위한 것이었는지는 끝내 묻지 않았다.',
+  says:['모르드개의 말이 이 결말을 그대로 미리 말해 준다. 네가 잠잠하면 민족은 다른 길로 구원을 얻고, 너와 네 아버지 집은 망한다고.',
+        '성경의 에스더는 여기서 물러서지 않았다. 사흘 금식을 부탁하고 "죽으면 죽으리이다"라고 답한 뒤 왕에게 갔다.'],
+  saysRef:'에스더 4:14 · 4:16'},
+
+'E.scepter':{
+  kicker:'5막에서 끝났습니다', sad:true, back:3,
+  backWhy:'하만의 의심을 낮추고, 왕의 마음이나 궁궐 사람들을 더 쌓아 본다',
+  title:'내밀어지지 않은 금 지팡이',
+  epi:'금 규를 내밀어야 살 수 있나니',
+  t:[
+    P('너는 안뜰로 걸어 들어갔다. 사흘을 굶은 몸에 옷이 무거웠고, 뜰은 생각보다 넓었다.'),
+    P('왕이 너를 봤다. 아주 잠깐 망설였다. 그 망설임이 금 지팡이를 들어 올릴 만큼은 되지 못했다.'),
+    P('왕비의 얼굴을 30일 동안 안 본 사람의 눈에는, 뜰 한가운데 선 사람이 먼저 법을 어긴 사람으로 보인다. 법은 그다음을 알아서 한다.'),
+    P('너는 그 뜰에서 죽었다. 그날 그 일을 아는 사람은 뜰을 지키던 사람들뿐이었다.'),
+    P('열한 달 뒤 그날, 구원은 다른 길로 왔다. 그 일에 왕비의 몫은 없었다.')
+  ],
+  verdict:'용기는 있었다. 그런데 뜰에 서기 전에 미리 쌓아 뒀어야 할 것이 있었다.',
+  says:['성경에서는 왕이 금 규를 내밀었고, 에스더는 그 끝을 만졌다.',
+        '에스더가 사흘을 굶고 간 것은 그냥 용기만 낸 것이 아니다. 그 전 몇 해 동안 헤개에게도, 궁 사람들에게도, 왕에게도 신뢰를 쌓아 둔 사람이었다.'],
+  saysRef:'에스더 5:2'},
+
+'E.night':{
+  kicker:'5막에서 끝났습니다', sad:true, back:5,
+  backWhy:'금 지팡이를 받은 그 자리에서 참고, 잔치로 미뤄 본다',
+  title:'하룻밤을 내준 왕비',
+  epi:'참지 못한 한 번이 하룻밤을 내주었다',
+  t:[
+    P('왕은 듣고도 결정하지 않았다. 반지를 준 것도 자기고, 그 편지를 허락한 것도 자기다. 왕비 말을 믿으면 자기 이름이 적힌 종이가 거짓말이 된다. 내일 다시 듣겠다고만 했다.'),
+    P('그날 저녁 하만이 왕에게 불려 갔다. 그는 오래 머물다 나왔다.'),
+    P('그 밤에 왕은 잠이 잘 왔다. 기록책을 가져오게 하지 않았다. 모르드개의 이름은 그 밤에 읽히지 않았다.'),
+    P('아침에 하만이 먼저 움직였다. 그는 밤새 세운 나무를 가리키며 왕에게 청했고, 왕은 어제 들은 이야기가 무엇이었는지 아직 정리하지 못한 채 손을 흔들었다.'),
+    P('그다음 일은 적지 않겠다. 다만 그날 이후 왕비는 다시 부름받지 못했다.'),
+    P('에스더기에서 가장 이상한 밤은, 왕비가 한 번 참았기 때문에 생긴 밤이었다.')
+  ],
+  verdict:'한 번을 못 참았다. 5막에서 미루는 것은 겁이 아니라 계산이었다.',
+  says:['성경의 에스더는 금 규를 받은 그 자리에서 말하지 않았다. 잔치로 미루고, 잔치에서 또 한 번 미뤘다.',
+        '그 미룬 하룻밤에 왕이 잠들지 못했고, 기록책이 펼쳐졌고, 모르드개의 이름이 나왔다.',
+        '미룬 것이 이긴 것이다. 이 책에서 가장 중요한 일은 전부 그 하룻밤에 일어난다.'],
+  saysRef:'에스더 5:4, 5:8 · 6:1'},
+
+'E.narrow':{
+  kicker:'8막에서 끝났습니다', sad:true, back:8,
+  backWhy:'성경이 쓴 대로, 첫 번째 편지와 똑같이 세게 써 본다',
+  title:'너무 상냥한 편지',
+  epi:'많은 백성이 유다인을 두려워하여',
+  t:[
+    P('편지는 점잖게 나갔다. 모여서 자기 목숨을 지키라고만 했다. 먼저 치지는 말라고.'),
+    P('각 지방 관리들이 그 편지를 읽고 이렇게 알아들었다. 왕은 이 사람들이 싸우는 걸 원하지 않는구나.'),
+    P('첫 번째 편지는 아직 살아 있었다. 두 장의 종이가 같은 날을 가리키는데, 한 장은 죽이라 하고 한 장은 지키기만 하라고 한다. 둘 중 어느 쪽이 더 센지는 읽는 사람이 정한다.'),
+    P('열한 달 뒤 그날, 어떤 지방은 무사했고 어떤 지방은 그렇지 못했다. 그 지방 이름들은 부림절에 읽히지 않는다.'),
+    P('명절은 생기지 않았다. 기뻐할 일이 지방마다 달랐기 때문이다.')
+  ],
+  verdict:'마음은 옳았다. 그런데 이 나라에서 사람을 지키는 건 마음이 아니라 종이의 세기였다.',
+  says:['성경의 두 번째 편지는 첫 번째 편지와 똑같이 세게 쓰였다. 모여서 맞서고 재산까지 빼앗아도 된다고.',
+        '그렇게 쓴 이유가 성경에 적혀 있다. 그 편지를 읽은 사람들이 겁을 먹어서, 많은 지방에서는 아무도 덤비지 않았다.',
+        '그리고 실제로는 유다인이 세 번 다 재산에 손을 대지 않았다. 할 수 있었는데 하지 않은 것을, 성경이 세 번 적어 두었다.'],
+  saysRef:'에스더 8:11, 8:17 · 9:10, 15, 16'},
+
+'E.wide':{
+  kicker:'8막에서 끝났습니다', sad:true, back:8,
+  backWhy:'성경이 쓴 대로, 맞서는 데까지만 허락해 본다',
+  title:'먼저 쳐도 된다는 편지',
+  epi:'그들의 재산에는 손을 대지 아니하였더라',
+  t:[
+    P('편지가 그렇게 나갔다. 먼저 쳐도 된다고.'),
+    P('각 지방에서 그 편지가 읽혔다. 읽은 사람들은 겁을 먹은 게 아니라 먼저 칼을 들었다. 먼저 맞는 쪽이 지는 것이니까.'),
+    P('13일이 오기도 전에 여러 지방에서 일이 벌어졌다. 누가 먼저였는지는 지방마다 말이 다르다.'),
+    P('그날이 왔을 때는 이미 열한 달 동안의 일을 아무도 셀 수 없었다. 성경은 숫자를 적어 두는 책인데, 이 이야기에는 적을 숫자가 없다.'),
+    P('명절은 생기지 않았다. 어느 날을 기뻐해야 할지 아무도 정하지 못했기 때문이다.')
+  ],
+  verdict:'세게 쓰는 것과 먼저 치는 것은 다르다. 성경의 편지는 세게 쓰였지만 먼저 치라고는 하지 않았다.',
+  says:['성경의 두 번째 편지는 "모여서 자기 생명을 보호하여" 치려는 자에게 맞서라고 한다. 세게 쓰였지만 먼저 치라는 말은 없다.',
+        '그 편지의 힘은 겁을 주는 데 있었다. 그래서 많은 지방에서는 싸움이 일어나지도 않았다.',
+        '그리고 유다인은 세 번 다 재산에 손을 대지 않았다. 할 수 있는 것을 다 하지 않는 것이 이 이야기의 끝이다.'],
+  saysRef:'에스더 8:11, 8:17 · 9:10, 15, 16'},
+
+'E.numbers':{
+  kicker:'9막에서 끝났습니다', sad:true, back:9,
+  backWhy:'잔치와 나눔까지 들어간 날로 정해 본다',
+  title:'숫자만 남은 명절',
+  epi:'가난한 자를 구제하는 날로 삼으라',
+  t:[
+    P('명절은 지켜졌다. 해마다 그달이 오면 사람들이 모여 두루마리를 읽었다.'),
+    P('읽은 것은 숫자였다. 500, 300, 75000. 아이들은 그 숫자를 먼저 외웠다.'),
+    P('잔치는 각자 알아서 하기로 했다. 선물도 각자 알아서. 그래서 줄 것이 있는 집은 서로 주고받았고, 줄 것이 없는 집에는 아무도 오지 않았다.'),
+    P('몇 세대가 지나자 그날은 이긴 날이 되었다. 이긴 날은 반드시, 언젠가, 다른 사람을 치는 날이 된다.'),
+    P('두루마리에는 네 이름이 붙었다. 그런데 그 두루마리에서 사람들이 기억하는 건 네가 뜰에 선 날이 아니라 숫자였다.')
+  ],
+  verdict:'구원까지는 해냈다. 그런데 그다음 세대가 무엇을 기억할지는 여기서 정해졌다.',
+  says:['성경은 이 명절을 아주 분명하게 정한다. 잔치를 열고, 서로 예물을 주고, 가난한 자를 구제하는 날이라고.',
+        '세 가지가 다 들어가야 한다. 받을 것이 없는 사람에게 가는 몫이 없으면 그날은 그냥 이긴 날이 된다.',
+        '에스더기는 이긴 이야기가 아니라, 이긴 다음에 무엇을 했는지에 대한 이야기다.'],
+  saysRef:'에스더 9:22'},
+
+/* ── 성경대로 끝까지 간 결말 ── */
+'E.light':{
+  kicker:'끝까지 갔습니다', back:0,
+  title:'부림의 빛',
+  epi:'유다인에게는 빛과 즐거움과 기쁨과 존귀함이 있는지라',
+  t:[
+    P('해마다 그달이 오면 수산 성에서 두루마리가 읽힌다. 하만의 이름이 나올 때마다 아이들이 소리를 질러 그 이름을 덮는다. 그 소란이 명절의 일부가 되었다.'),
+    P('그날에는 선물 꾸러미가 집집마다 간다. 그리고 반드시 가난한 집에도 간다. 네가 그렇게 정했기 때문이다.'),
+    P('줄 것이 없는 사람에게 가는 몫이 없으면, 그날은 그냥 이긴 날이 된다. 이긴 날은 다음 세대에 가서 반드시 다른 사람을 치는 날이 된다. 너는 그걸 알고 있었다.'),
+    P('궁 안에서 너는 끝까지 왕비였다. 궁 밖에서 너는 다시 하닷사가 되었다. 베어도 다시 자라는 나무. 두 이름이 한 사람 것이 되기까지 열두 해가 걸렸다.'),
+    P('기록책에는 모르드개의 이름이 적혔다. 명절에는 네 이름이 붙었다. 사람들은 그 두루마리를 에스더의 두루마리라고 부른다.')
+  ],
+  verdict:'성경이 적은 길을 하나도 빠뜨리지 않고 걸었고, 그 길을 걸을 힘까지 미리 쌓아 두었다. 가장 좋은 결말이다.',
+  says:['이 게임에서 성경과 하나도 어긋나지 않은 길이다.',
+        '에스더 8장 16절은 그날을 "빛과 즐거움과 기쁨과 존귀함"이라고 적었다.'],
+  saysRef:'에스더 8:16 · 9:22 · 10:3'},
+
+'E.hadassah':{
+  kicker:'끝까지 갔습니다', back:0,
+  title:'하닷사라는 이름',
+  epi:'네가 왕후의 자리를 얻은 것이 이 때를 위함이 아닌지',
+  t:[
+    P('너는 성경이 적은 길을 그대로 걸었다. 뜰에 섰고, 참았고, 한 번 울며 빌었고, 명절을 나누는 날로 정했다.'),
+    P('그 모든 자리에서 너를 움직인 것은 용기였다. 궁 사람들의 손보다 네 두 다리가 먼저 움직였다.'),
+    P('그래서 치른 값이 있다. 왕은 너를 사랑하면서도 조금 무서워했고, 궁 사람들은 네 앞에서 말을 골랐다.'),
+    P('그런데 유대인 동네에서 너를 부르는 이름이 바뀌었다. 에스더가 아니라 하닷사라고 부른다. 숨겼던 이름이 밖으로 나와 돌아다니게 되기까지, 한 사람이 뜰 하나를 건너야 했다.'),
+    P('부림절 전날은 에스더의 금식이라고 불린다. 잔치보다 하루 먼저 오는 날이다. 그 하루가 네가 남긴 것이다.')
+  ],
+  verdict:'성경이 적은 길을 그대로 걸었다. 다만 거의 혼자 걸었다.',
+  says:['성경과 어긋난 선택은 없었다.',
+        '다만 에스더는 혼자 해낸 사람이 아니다. 헤개가 있었고, 하닥이 있었고, 사흘을 같이 굶은 사람들이 있었다.'],
+  saysRef:'에스더 4:16 · 9:22'},
+
+'E.chronicle':{
+  kicker:'끝까지 갔습니다', back:0,
+  title:'기록책의 한 줄',
+  epi:'메대와 바사 왕들의 일기에 기록되지 아니하였느냐',
+  t:[
+    P('모든 일이 지나갔다. 편지는 두 번 나갔고, 반지는 두 번 주인을 바꿨고, 그날은 뒤바뀐 날로 기록되었다.'),
+    P('너는 성경이 적은 대로 했다. 뜰에 섰고, 잔치를 두 번 열었고, 한 번 울며 빌었고, 명절을 나누는 날로 정했다.'),
+    P('그 이상은 하지 않았다. 그 이하도 아니었다.'),
+    P('부림절은 지켜진다. 그 명절을 세운 사람으로는 모르드개의 이름이 적혔다. 그는 왕 다음가는 자리에 올랐고, 그 이름에 붙은 설명은 길다. 네 이름에는 왕비라는 한 단어만 붙었다.'),
+    P('기록책은 반지를 낀 사람의 이름을 적는다. 그래도 한 줄은 남았다. 한 줄이 남은 사람은 그렇게 많지 않다.')
+  ],
+  verdict:'성경이 적은 길을 그대로 걸었다. 다만 그 길을 걸을 힘을 아슬아슬하게만 쌓았다.',
+  says:['성경과 어긋난 선택은 없었다.',
+        '궁궐 사람들과 용기를 더 쌓아 두면 같은 길이 다르게 끝난다. 에스더가 뜰에 설 수 있었던 건 그 전 몇 해 동안 쌓아 둔 것이 있었기 때문이다.'],
+  saysRef:'에스더 2:15 · 4:16'}
+};
+
+/* ───────────── 끝까지 간 사람의 결말을 가르는 규칙 ───────────── */
+function judge(){
+  if(st.mang >= 10 && st.dam >= 10) return 'E.light';
+  if(st.dam >= 10) return 'E.hadassah';
+  return 'E.chronicle';
+}
+
+/* ───────────────────────── 상태 ───────────────────────── */
+const KEY = 'susa-night-v4';
+const ACT_FIRST = {1:'a1-1',2:'a2-1',3:'a3-1',4:'a4-1',5:'a5-1',6:'a6-1',7:'a7-1',8:'a8-1',9:'a9-1',10:'a10-1'};
+let st, cur, CP = {}, echoLine = '', bnote = null;
+
+function fresh(){
+  return {chong:2, mang:2, dam:2, ui:0, flags:{}, log:[], at:'a1-1', echo:'', bn:null};
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({st, cur, CP})); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return null;
+    const d = JSON.parse(raw);
+    if(d && d.st && d.cur && (SCENES[d.cur] || ENDINGS[d.cur])) return d;
+  }catch(e){}
+  return null;
+}
+function wipe(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+const clone = o => JSON.parse(JSON.stringify(o));
+
+/* ───────────────────────── 그리기 ───────────────────────── */
+const $ = id => document.getElementById(id);
+const stage = $('stage'), crown = $('crown'), tools = $('tools');
+
+function rosette(){
+  let pet = '';
+  for(let i=0;i<12;i++) pet += '<use href="#petal" transform="rotate(' + (i*30) + ')"/>';
+  return '<svg class="rosette" viewBox="-50 -50 100 100" aria-hidden="true">' +
+    '<defs><path id="petal" d="M0,-40 C7,-28 7,-19 0,-13 C-7,-19 -7,-28 0,-40 Z" fill="currentColor"/></defs>' +
+    '<circle r="46" fill="none" stroke="currentColor" stroke-width="1"/>' +
+    '<circle r="43" fill="none" stroke="currentColor" stroke-width="0.5"/>' + pet +
+    '<circle r="9" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+    '<circle r="3.5" fill="currentColor"/></svg>';
+}
+
+function drawMeters(deltas){
+  $('meters').innerHTML = STATS.map((s,i) => {
+    const v = Math.max(0, Math.min(MAX, st[s.k]));
+    const d = deltas && deltas[s.k];
+    return '<button class="meter' + (s.danger?' danger':'') + '" data-s="' + i + '" title="' + s.desc + '">' +
+      (d ? '<span class="delta' + (d<0?' down':'') + '">' + (d>0?'+':'') + d + '</span>' : '') +
+      '<span class="val">' + v + '</span><span class="nm">' + s.name + '</span>' +
+      '<span class="bar"><i style="width:' + (v/MAX*100) + '%"></i></span></button>';
+  }).join('');
+  $('meters').querySelectorAll('.meter').forEach(b => b.addEventListener('click', openHow));
+}
+
+function drawCrown(act, deltas){
+  crown.hidden = false; tools.hidden = false;
+  $('actMark').innerHTML = '<b>' + act + '막</b> · ' + ACTS[act].title;
+  $('pips').innerHTML = Array.from({length:10}, (_,i) => {
+    const n = i+1;
+    return '<span class="pip' + (n<act?' on':'') + (n===act?' now':'') + '"></span>';
+  }).join('');
+  drawMeters(deltas);
+}
+
+function gloss(s, used){
+  DICT_KEYS.forEach(k => {
+    if(used.has(k)) return;
+    const i = s.indexOf(k);
+    if(i < 0) return;
+    if(s.lastIndexOf('<', i) > s.lastIndexOf('>', i)) return;
+    used.add(k);
+    s = s.slice(0,i) + '<b class="gl" data-w="' + k + '" tabindex="0" role="button">' + k + '</b>' + s.slice(i + k.length);
+  });
+  return s;
+}
+
+function renderText(arr){
+  const used = new Set();
+  let html = '';
+  if(bnote){
+    html += '<p class="bnote' + (bnote.same ? ' same' : '') + '"><b>' +
+      (bnote.same ? '성경과 같은 선택이에요' : '성경에서는') + '</b>' +
+      bnote.text + ' <span style="color:var(--gold)">(' + bnote.ref + ')</span></p>';
+  }
+  if(echoLine) html += '<p class="echo">' + gloss(echoLine, used) + '</p>';
+  arr.forEach(x => {
+    if(!x) return;
+    if(typeof x === 'function') x = x(st);
+    if(typeof x === 'string'){ html += '<p>' + gloss(x, used) + '</p>'; }
+    else if(x.bible){ html += '<p class="bible">📖 <b>' + x.bible + '</b> — ' + x.what + '</p>'; }
+    else if(x.quote){ html += '<p class="quote">' + x.quote + '<em>' + x.ref + '</em></p>'; }
+    else if(x.must){ html += '<p class="must">' + x.must + '</p>'; }
+    else if(x.tip){ html += '<p class="tip">' + gloss(x.tip, used) + '</p>'; }
+    else if(x.who){ html += '<p class="said"><b>' + x.who + '</b>' + gloss(x.line, used) + '</p>'; }
+  });
+  return html;
+}
+
+function fxChips(e){
+  if(!e) return '';
+  const names = {}; STATS.forEach(s => names[s.k] = s.name);
+  const parts = Object.keys(e).filter(k => e[k]).map(k =>
+    '<span' + (e[k] < 0 ? ' class="down"' : '') + '>' + names[k] + ' ' + (e[k]>0?'+':'') + e[k] + '</span>');
+  return parts.length ? '<span class="fx">' + parts.join('') + '</span>' : '';
+}
+
+function stagger(){
+  stage.querySelectorAll('.passage p, .choice').forEach((el,i) => {
+    el.style.animationDelay = Math.min(i*70, 700) + 'ms';
+  });
+}
+
+function showScene(id, deltas){
+  cur = id;
+  const sc = SCENES[id];
+  if(!sc){ showEnding(id); return; }
+  st.at = id;
+
+  if(sc.onEnter && !st.flags['on:' + id]){
+    st.flags['on:' + id] = true;
+    const d = sc.onEnter(st);
+    if(d) deltas = Object.assign({}, deltas || {}, d);
+  }
+  drawCrown(sc.act, deltas);
+
+  let body = sc.t.slice();
+  if(sc.cond) sc.cond.forEach(c => { if(c.when(st)) body = body.concat(c.t); });
+  const refs = body.filter(x => x && x.bible);
+  if(refs.length) body = body.filter(x => !(x && x.bible)).concat(refs);
+
+  const choices = sc.c.map((c,i) => {
+    if(c.go) return '<button class="choice go" data-i="' + i + '">' + c.x + ' →</button>';
+    const ok = !c.req || c.req(st);
+    if(!ok){
+      const why = typeof c.lock === 'function' ? c.lock(st) : c.lock;
+      return '<button class="choice locked" data-i="' + i + '" disabled aria-disabled="true">' +
+        '<span class="tag">아직 고를 수 없음 · ' + c.tag + '</span>' + why + '</button>';
+    }
+    return '<button class="choice" data-i="' + i + '"><span class="tag">' + c.tag + '</span>' +
+      c.x + fxChips(c.e) + '</button>';
+  }).join('');
+
+  stage.innerHTML = '<section class="panel"><h2 class="scene-title">' + sc.title + '</h2>' +
+    '<div class="passage">' + renderText(body) + '</div>' +
+    '<div class="choices">' + choices + '</div></section>';
+  echoLine = ''; bnote = null; st.echo = ''; st.bn = null;
+  stagger(); bindGloss();
+  stage.querySelectorAll('.choice:not(.locked)').forEach(b => {
+    b.addEventListener('click', () => pick(sc, +b.dataset.i));
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  save();
+}
+
+function pick(sc, i){
+  const c = sc.c[i];
+  const deltas = {};
+  if(c.e) for(const k in c.e){
+    st[k] = Math.max(0, Math.min(MAX, st[k] + c.e[k]));
+    deltas[k] = c.e[k];
+  }
+  if(c.f) Object.assign(st.flags, c.f);
+  if(!c.go) st.log.push({act:sc.act, what:c.tag + ' — ' + sc.title,
+                         mark: sc.must ? (c.canon ? 'o' : 'x') : ''});
+  echoLine = c.echo || ''; st.echo = echoLine;
+  bnote = c.b ? {text:c.b, ref:c.bref, same:!!c.canon} : null;
+  st.bn = bnote;
+
+  const next = typeof c.to === 'function' ? c.to(st) : c.to;
+  const resolved = next === 'ENDING' ? judge() : next;
+  const nextAct = SCENES[resolved] ? SCENES[resolved].act : null;
+
+  if(nextAct && nextAct !== sc.act) curtainTo(nextAct, resolved, deltas);
+  else showScene(resolved, deltas);
+}
+
+function curtainTo(act, id, deltas){
+  CP[act] = clone(st);
+  const prev = ACTS[act - 1];
+  const el = $('curtain');
+  el.innerHTML = '<div class="in">' + rosette() +
+    '<div class="no">' + act + '막</div><h2>' + ACTS[act].title + '</h2>' +
+    '<div class="ref">' + ACTS[act].ch + '</div>' +
+    (prev ? '<div class="reading">📖 <b>' + ACTS[act-1].ch + '</b>을 지나왔습니다.<br>성경을 펴면 <b>' +
+      ACTS[act-1].verses + '</b>을 꼭 보세요.</div>' : '') +
+    '<div class="skip">아무 데나 누르면 넘어갑니다</div></div>';
+  el.hidden = false;
+  let done = false;
+  const go = () => {
+    if(done) return; done = true;
+    el.hidden = true; el.removeEventListener('click', go);
+    showScene(id, deltas);
+  };
+  el.addEventListener('click', go);
+  setTimeout(go, prev ? 4600 : 2600);
+}
+
+/* ─────────────── 결말 화면 ─────────────── */
+function whyList(){
+  const L = [];
+  st.log.filter(l => l.mark).forEach(l =>
+    L.push('<li' + (l.mark === 'x' ? ' class="no"' : '') + '><b>' + l.act + '막 ' +
+      (l.mark === 'o' ? '성경대로' : '성경과 다르게') + '</b> — ' + l.what + '</li>'));
+  if(st.flags.harbona) L.push('<li><b>6막</b> — 하르보나를 미리 보냈다</li>');
+  L.push('<li>궁궐 사람들 <b>' + st.mang + '</b> · 용기 <b>' + st.dam + '</b> · 하만의 의심 <b>' + st.ui + '</b></li>');
+  return '<div class="why"><h4>성경과 맞춰 보기</h4><ul>' + L.join('') + '</ul></div>';
+}
+
+function showEnding(id){
+  cur = id; st.at = id;
+  const e = ENDINGS[id];
+  crown.hidden = true;
+  const tal = STATS.map(s => '<div><span class="k">' + s.name + '</span><span class="v">' + st[s.k] + '</span></div>').join('');
+  const canGoBack = e.sad && e.back && CP[e.back];
+
+  stage.innerHTML = '<section class="panel ending' + (e.sad ? ' sad' : '') + '">' +
+    '<div style="text-align:center">' + rosette() + '</div>' +
+    '<span class="stamp' + (e.sad ? ' off' : '') + '">' +
+      (e.sad ? '이 결말은 성경에 없습니다' : '성경대로 갔습니다') + '</span>' +
+    (e.sad ? '<div class="over">이 야 기 는 여 기 서 끝 났 습 니 다</div>' : '') +
+    '<div class="kicker">' + e.kicker + '</div><h2>' + e.title + '</h2>' +
+    '<p class="epi">' + e.epi + '</p>' +
+    '<div class="passage">' + renderText(e.t) + '</div>' +
+    '<p style="margin:2.2rem 0 0;color:var(--gold-2)">' + e.verdict + '</p>' +
+    '<div class="says"><h4>📖 성경에서는 이렇게 됩니다</h4>' +
+      e.says.map(p => '<p>' + p + '</p>').join('') +
+      '<p class="ref">' + e.saysRef + '</p></div>' +
+    whyList() +
+    '<div class="tally">' + tal + '</div>' +
+    '<div class="choices">' +
+      '<button class="choice restart" id="again">1막부터 처음부터 다시 시작한다</button>' +
+      (canGoBack ? '<button class="choice restart" id="rewind">' + e.back + '막으로 돌아간다 — ' + e.backWhy + '</button>' : '') +
+    '</div>' +
+    '<div class="menu"><button class="btn quiet" id="seelog">내가 고른 것들</button>' +
+    '<button class="btn quiet" id="seenote">진짜 성경 이야기</button></div></section>';
+  tools.hidden = false;
+  stagger(); bindGloss();
+  $('again').addEventListener('click', start);
+  if(canGoBack) $('rewind').addEventListener('click', () => {
+    st = clone(CP[e.back]); echoLine = ''; bnote = null;
+    Object.keys(CP).forEach(k => { if(+k > e.back) delete CP[k]; });
+    curtainTo(e.back, ACT_FIRST[e.back], null);
+  });
+  $('seelog').addEventListener('click', openLog);
+  $('seenote').addEventListener('click', openNotes);
+  window.scrollTo({top:0, behavior:'smooth'});
+  wipe();
+}
+
+/* ───────────────────── 표제 화면 ───────────────────── */
+function titleScreen(){
+  const saved = load();
+  crown.hidden = true; tools.hidden = true;
+  stage.innerHTML = '<section class="title-screen">' + rosette() +
+    '<h1>수산 궁의 밤</h1>' +
+    '<div class="sub">에스더 이야기 · 10막 선택 게임</div>' +
+    '<div class="intro">' +
+    '<p>지금부터 약 2500년 전, <b class="gl" data-w="페르시아">페르시아</b>라는 아주 큰 나라가 있었다. 왕의 이름은 <b class="gl" data-w="아하수에로">아하수에로</b>. 인도에서 이집트까지 127개 지방을 다스렸다.</p>' +
+    '<p>너는 그 나라에 사는 <b class="gl" data-w="유대인">유대인</b> 소녀다. 이름이 두 개다. 집에서는 <b class="gl" data-w="하닷사">하닷사</b>, 밖에서는 <b class="gl" data-w="에스더">에스더</b>.</p>' +
+    '<p>10개의 막을 지나는 동안 너는 왕비가 되고, 네 민족 전부가 죽게 될 위기를 만난다. 그때 입을 열지 말지는 네가 고른다.</p>' +
+    '<p><b style="color:#eb8d8d">성경에 분명히 적혀 있는 장면이 여섯 군데 있다.</b> 거기서 성경과 다르게 고르면 이야기가 그 자리에서 끝난다. 그런 장면에는 미리 빨간 표시가 나온다.</p>' +
+    '<p>나머지 장면은 성경에 적혀 있지 않은 자리다. 무엇을 골라도 되고, 거기서 쌓은 숫자가 4막과 5막을 넘을 힘이 된다.</p>' +
+    '<p style="color:var(--dim);font-size:.92rem">밑줄 그어진 낱말을 누르면 뜻이 나옵니다. 장면마다 성경 몇 장 몇 절인지 알려 줍니다. 성경 인용은 개역개정을 따랐습니다.</p>' +
+    '</div>' +
+    '<div class="menu">' +
+    (saved ? '<button class="btn" id="cont">이어서 하기</button>' : '') +
+    '<button class="btn' + (saved?' quiet':'') + '" id="newgame">시작하기</button>' +
+    '<button class="btn quiet" id="how">게임 방법</button>' +
+    '<button class="btn quiet" id="dict">낱말 사전</button></div></section>';
+  bindGloss();
+  if(saved) $('cont').addEventListener('click', () => {
+    st = saved.st; CP = saved.CP || {}; echoLine = st.echo || ''; bnote = st.bn || null;
+    if(ENDINGS[saved.cur]) showEnding(saved.cur); else showScene(saved.cur);
+  });
+  $('newgame').addEventListener('click', start);
+  $('how').addEventListener('click', openHow);
+  $('dict').addEventListener('click', openDict);
+}
+
+function start(){
+  wipe(); st = fresh(); CP = {}; echoLine = ''; bnote = null;
+  curtainTo(1, 'a1-1', null);
+}
+
+/* ───────────────────── 서랍과 말풍선 ───────────────────── */
+const drawer = $('drawer'), pop = $('pop');
+
+function openDrawer(title, html){
+  $('drawerTitle').textContent = title;
+  $('drawerBody').innerHTML = html;
+  drawer.hidden = false; drawer.scrollTop = 0;
+  $('drawerClose').focus();
+}
+
+function openHow(){
+  const now = st ? STATS.map(s => s.name + ' ' + st[s.k]).join(' · ') : null;
+  openDrawer('게임 방법',
+    '<div class="rulebox"><h4>두 가지 장면이 있다</h4>' +
+    '<p><b style="color:#eb8d8d">빨간 표시가 있는 장면</b> — 성경에 분명히 적혀 있는 자리다. 성경과 다르게 고르면 <b>이야기가 거기서 끝난다.</b> 여섯 군데 있다.</p>' +
+    '<p><b style="color:var(--gold-2)">표시가 없는 장면</b> — 성경에 적혀 있지 않은 자리다. 무엇을 골라도 괜찮다. 대신 숫자가 오르내린다.</p>' +
+    '<p class="mini">고른 다음에는 성경에서 어떻게 했는지 알려 준다. 성경과 같은 걸 골랐으면 그렇다고 말해 준다.</p></div>' +
+
+    '<div class="rulebox"><h4>숫자 네 개</h4>' +
+    STATS.map(s => '<p><b style="color:var(--gold-2)">' + s.name + '</b> — ' + s.desc + '</p>').join('') +
+    '<p class="mini">숫자는 표시가 없는 장면에서 쌓는다. 그 숫자가 4막과 5막을 넘을 힘이 된다.</p>' +
+    (now ? '<p class="mini">지금 내 숫자 : ' + now + '</p>' : '') + '</div>' +
+
+    '<div class="rulebox"><h4>꼭 넘어야 하는 두 번의 시험</h4>' +
+    '<p><b style="color:var(--gold-2)">4막</b> — 목숨을 걸겠다고 말하려면 <b>용기 5</b> 또는 <b>궁궐 사람들 7</b>이 있어야 한다. 모자라면 그 선택지가 잠긴다.</p>' +
+    '<p><b style="color:var(--gold-2)">5막</b> — 왕 앞 안뜰에 들어가려면 <b>왕의 마음 4</b> 또는 <b>궁궐 사람들 6</b>이 있어야 한다.</p>' +
+    '<p class="mini">둘 다 조건이 두 가지다. 왕의 마음을 못 얻었어도 궁궐 사람들을 많이 모아 뒀으면 통과할 수 있다.</p></div>' +
+
+    '<div class="rulebox"><h4>하만의 의심이 하는 일</h4>' +
+    '<p>이 숫자만은 낮을수록 좋다.</p>' +
+    '<p>· <b>4 이상</b>이면 5막 시험이 어려워진다. (왕의 마음 6 또는 궁궐 사람들 8이 필요해진다)</p>' +
+    '<p>· <b>6 이상</b>이면 7막에서 하만이 먼저 왕에게 네 험담을 해서 왕의 마음이 1 깎인다.</p></div>' +
+
+    '<div class="rulebox"><h4>성경과 다르게 고르면 끝나는 자리 여섯 곳</h4>' +
+    '<p><b>2막 헤개의 뜰</b> — 왕에게 갈 때 무엇을 가져갈까</p>' +
+    '<p><b>2막 왕을 죽이려는 계획</b> — 누구 이름으로 알릴까 (여기만은 6막에서 끝난다)</p>' +
+    '<p><b>4막 혹시 이때를 위해서가 아닐까</b> — 갈까 말까</p>' +
+    '<p><b>5막 금 지팡이</b> — 지금 말할까 미룰까</p>' +
+    '<p><b>8막 되돌릴 수 없는 종이</b> — 두 번째 편지를 어떻게 쓸까</p>' +
+    '<p><b>9막 부림절</b> — 명절을 무슨 날로 정할까</p>' +
+    '<p class="mini">9막 「뒤바뀐 날」에서 에스더가 하루를 더 청하는 대목은 고르게 하지 않았다. 성경이 그렇게 적기는 했는데 왜 그랬는지는 적지 않았고, 어른들도 읽기 어려워하는 자리이기 때문이다. 거기는 성경이 적은 대로만 지나간다.</p></div>' +
+
+    '<div class="rulebox"><h4>결말은 열한 가지</h4>' +
+    '<p><b style="color:var(--ash)">회색 도장</b> — 성경과 다르게 골라서 도중에 끝난 결말. 여덟 가지다. 어디서 갈라졌는지 알려 주고, 그 막으로 돌아가는 버튼을 준다.</p>' +
+    '<p><b style="color:var(--gold-2)">금색 도장</b> — 성경대로 끝까지 간 결말. 세 가지인데, 어떤 것이 나오는지는 쌓아 둔 숫자로 갈린다.</p>' +
+    '<p class="mini">가장 좋은 결말 「부림의 빛」은 성경대로 끝까지 가면서 궁궐 사람들 10 이상, 용기 10 이상을 함께 쌓아야 나온다. 용기만 10 이상이면 「하닷사라는 이름」, 둘 다 모자라면 「기록책의 한 줄」이 나온다.</p></div>' +
+
+    '<div class="rulebox"><h4>성경을 같이 펴 놓고 해도 좋다</h4>' +
+    '<p>장면마다 아래에 📖 표시로 성경 몇 장 몇 절인지 적혀 있다. 막이 끝날 때는 그 장에서 꼭 볼 절을 몇 개 집어 준다.</p>' +
+    '<p class="mini">성경 인용은 개역개정을 따랐습니다.</p></div>');
+}
+
+function openDict(){
+  openDrawer('낱말 사전',
+    '<dl class="dict">' + DICT.map(d =>
+      '<div><dt>' + d[0] + '</dt><dd>' + d[1] +
+      (d[2] ? '<span class="ref">📖 ' + d[2] + '</span>' : '') + '</dd></div>').join('') + '</dl>');
+}
+
+function openLog(){
+  const items = (st && st.log.length)
+    ? '<ul class="log">' + st.log.map(l =>
+        '<li><span class="when">' + l.act + '막</span><span class="what' +
+        (l.mark === 'o' ? ' ok' : l.mark === 'x' ? ' no' : '') + '">' +
+        (l.mark === 'o' ? '○ ' : l.mark === 'x' ? '✕ ' : '') + l.what + '</span></li>').join('') + '</ul>' +
+      '<p class="empty" style="margin-top:1.2rem">○ 는 성경대로 고른 자리, ✕ 는 성경과 다르게 고른 자리입니다.</p>'
+    : '<p class="empty">아직 아무것도 고르지 않았다.</p>';
+  openDrawer('내가 고른 것들', items);
+}
+
+function openNotes(){
+  const upto = !st ? 1 : (SCENES[cur] ? SCENES[cur].act : 10);
+  const html = Object.keys(ACTS).map(Number).filter(n => n <= upto).map(n =>
+    '<div class="note"><h4>' + n + '막 · ' + ACTS[n].title +
+    ' <span style="font-family:var(--ui);font-size:.7rem;color:var(--gold)">' + ACTS[n].ch + '</span></h4>' +
+    '<p>' + ACTS[n].note + '</p></div>').join('');
+  openDrawer('진짜 성경 이야기', html +
+    '<p class="empty" style="margin-top:1.4rem">지금까지 지나온 막까지만 보입니다. 미리 알면 재미없으니까요.</p>');
+}
+
+function bindGloss(){
+  document.querySelectorAll('.gl').forEach(el => {
+    if(el.dataset.bound) return;
+    el.dataset.bound = '1';
+    const show = ev => {
+      ev.stopPropagation();
+      const w = el.dataset.w, d = DICT_MAP[w];
+      if(!d) return;
+      pop.innerHTML = '<b>' + w + '</b>' + d.d + (d.r ? '<span class="ref">📖 ' + d.r + '</span>' : '');
+      pop.hidden = false;
+      const r = el.getBoundingClientRect();
+      const pw = pop.offsetWidth, ph = pop.offsetHeight;
+      const x = Math.min(Math.max(8, r.left), window.innerWidth - pw - 8);
+      let y = r.bottom + 8;
+      if(y + ph > window.innerHeight - 8) y = Math.max(8, r.top - ph - 8);
+      pop.style.left = x + 'px'; pop.style.top = y + 'px';
+    };
+    el.addEventListener('click', show);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); show(e); } });
+  });
+}
+
+$('drawerClose').addEventListener('click', () => drawer.hidden = true);
+drawer.addEventListener('click', e => { if(e.target === drawer) drawer.hidden = true; });
+document.addEventListener('click', () => { pop.hidden = true; });
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){ drawer.hidden = true; pop.hidden = true; }
+});
+
+$('btnHow').addEventListener('click', openHow);
+$('btnDict').addEventListener('click', openDict);
+$('btnLog').addEventListener('click', openLog);
+$('btnNote').addEventListener('click', openNotes);
+$('btnReset').addEventListener('click', () => { wipe(); titleScreen(); });
+
+/* ─────────────── 부팅 ─────────────── */
+function boot(data){
+  if(data && data.st && data.cur){
+    st = data.st; CP = data.CP || {}; echoLine = st.echo || ''; bnote = st.bn || null;
+    if(ENDINGS[data.cur]) showEnding(data.cur);
+    else if(SCENES[data.cur]) showScene(data.cur);
+    else titleScreen();
+  } else titleScreen();
+}
+try{
+  if(window.claude && window.claude.hot){
+    window.claude.hot.snapshot(() => (st && cur) ? {st, cur, CP} : null);
+    window.claude.hot.ready ? window.claude.hot.ready(boot) : boot(window.claude.hot.data);
+  } else boot(null);
+}catch(e){ boot(null); }
+
+})();
+</script>
+</body>
+</html>
